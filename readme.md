@@ -1,1 +1,1 @@
-Readme to be created, please read the code for now.
+Please see the example love and main.lua for how effects work.
