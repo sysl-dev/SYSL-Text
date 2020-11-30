@@ -100,7 +100,7 @@ local font_table = "System.font.name"
 local shader_table = "System.shader"
 local palette_table = "System.palette.number"
 local image_table = "texture"
-local icon_table = "Gx.icon"
+--local icon_table = "Gx.icon"
 local audio_table = "Audio"
 
 --[[----------------------------------------------------------------------------------------------------
@@ -888,8 +888,9 @@ M.command_table = {
     -----------------------------------------------------------------------------
     --  Image Commands TODO
     -----------------------------------------------------------------------------
-    --[[ Draw an icon ]]---------------------------------------------------------
-    ["icon"] = 
+    --[[ Draw an icon 
+    hack to make work with your icon library]]---------------------------------------------------------
+   --[[ ["icon"] = 
     function(self)
         local icon_table = string_to_table(icon_table)
         local _mod1 = tonumber(self.command_modifer[2])
@@ -898,7 +899,7 @@ M.command_table = {
         if _mod1 < 1 then return end
         icon_table.draw(_mod1, self.tx + self.cursor.x, self.ty + self.cursor.y)
         self.cursor.x = self.cursor.x + 16
-    end,
+    end,]]--
 
     --[[ Draw a picture ]]-------------------------------------------------------
     ["image"] = 
