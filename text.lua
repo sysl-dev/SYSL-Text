@@ -1,7 +1,7 @@
 local m = {
     debug        = true,
     _NAME        = 'SYSL-Text',
-    _VERSION     = '1.0',
+    _VERSION     = '1.5',
     _DESCRIPTION = 'Fancy Text System',
     _URL         = 'https://github.com/SystemLogoff',
     _LICENSE     = [[
@@ -66,14 +66,8 @@ local undefined_image = love.graphics.newImage(_undefined_image)
 -- Table of voices to use for speaking.
 -- You will need to update this path.
 local text_sounds = {
-love.audio.newSource( 'assets/audio/text/default.ogg', "static" ),
-love.audio.newSource( 'assets/audio/text/typing.ogg', "static" ),
-}
 
---[[ Sound Volume]]-----------------------------------------------------------------------------------
-for i=1, #text_sounds do 
-text_sounds[i]:setVolume(0.2)
-end
+}
 
 
 --[[ Screen Size ]]-------------------------------------------------------------------------------------
@@ -90,18 +84,20 @@ local base = {
 -- 4. Commands that pass values use this to split it from the command. The default is "="
 -- 5. Tag that is used before Unicode text as a dirty hack to get it to work with this library. The default is "|"
 -- 5a. Use it as follows (assumes defaults) [|è] 
+-- This is advanced user changes required, so please edit this here it will not be exposed 
 local special_character = {"[","]","#","=","|"}
 
 --[[ Data Shortcuts ]]----------------------------------------------------------------------------------
 -- Text assumes that you are storing your assets in a table for access.
 -- You may have to hack some text commands if this is incorrect for your project.
 -- Note: All commands that pass values convert them to lowercase.
-local font_table = "System.font.name"
-local shader_table = "System.shader"
-local palette_table = "System.palette.number"
-local image_table = "texture"
---local icon_table = "Gx.icon"
-local audio_table = "Audio"
+local audio_table = nil
+local font_table = nil
+local icon_table = nil
+local image_table = nil
+local palette_table = nil
+local shader_table = nil
+local function_command = nil
 
 --[[----------------------------------------------------------------------------------------------------
        Local Functions
@@ -187,24 +183,85 @@ end
 
 
 --[[----------------------------------------------------------------------------------------------------
+       Configuration Functions
+----------------------------------------------------------------------------------------------------]]-- 
+m.configure = {}
+
+function m.configure.audio_table(table_string)
+    local test = string_to_table(table_string)
+    audio_table = table_string
+end
+
+function m.configure.font_table(table_string)
+    local test = string_to_table(table_string)
+    font_table = table_string
+end
+
+function m.configure.image_table(table_string)
+    local test = string_to_table(table_string)
+    image_table = table_string
+end
+
+function m.configure.icon_table(table_string)
+    local test = string_to_table(table_string)
+    icon_table = table_string
+end
+
+function m.configure.palette_table(table_string)
+    local test = string_to_table(table_string)
+    palette_table = table_string
+end
+
+function m.configure.shader_table(table_string)
+    local test = string_to_table(table_string)
+    shader_table = table_string
+end
+
+function m.configure.function_command_enable(enable_bool)
+    function_command = enable_bool
+end
+
+function m.configure.add_text_sound(sound, volume) 
+    -- sound should be a short love2d sound object
+    -- volume is adjusting the sound level for the voice.
+    text_sounds[#text_sounds+1] = sound
+    if volume then 
+        text_sounds[#text_sounds]:setVolume(volume)
+    end
+end
+
+
+--[[----------------------------------------------------------------------------------------------------
        Class Functions
 ----------------------------------------------------------------------------------------------------]]-- 
 local M = {}
 
 --[[----------------------------------------------------------------------------------------------------
+       IS_FINISHED - Returns if the textbox has finished printing all the text or is waiting for input.
+----------------------------------------------------------------------------------------------------]]-- 
+function M:is_finished()
+    return self.current_character == #self.table_string or self.waitforinput
+end
+
+--[[----------------------------------------------------------------------------------------------------
+       CONTINUE - Continues printing if stopped by [waitforinput]
+----------------------------------------------------------------------------------------------------]]-- 
+function M:continue()
+    self.waitforinput = false
+end
+
+--[[----------------------------------------------------------------------------------------------------
        SEND - Sends a string to be drawn by the current textbox.
 ----------------------------------------------------------------------------------------------------]]-- 
-function M:send(text, wrap_num, show_all, wrap_font)
+function M:send(text, wrap_num, show_all)
     self.current_character = #self.table_string
     self.current_print_speed = self.default_print_speed
+    self.waitforinput = false
+    love.graphics.setFont(self.default_font)
     if text_sounds[self.sound_number] then
         text_sounds[self.sound_number]:stop()
     end
-    local current_system_font = love.graphics.getFont()
-    if wrap_font ~= nil then 
-        local font_table = string_to_table(font_table)
-        love.graphics.setFont(font_table[wrap_font]) 
-    end
+
     text = text or "ERROR_NO_SENT_TEXT" -- Set a default message if nothing was sent.
     text = text .. special_character[1] .. "end" .. special_character[2] -- Append an 'end' tag to the end of the string
     text = self.prefix .. text -- add any formatting prefixes required.
@@ -227,7 +284,7 @@ function M:send(text, wrap_num, show_all, wrap_font)
             self.table_string[#self.table_string+1] = ""  -- Create the next table entry as an empty string
         end
         if command_word then 
-            self.table_string[#self.table_string] = self.table_string[#self.table_string] .. character:lower() -- Combine while command word is on / Commands are always LOWERCASE
+            self.table_string[#self.table_string] = self.table_string[#self.table_string] .. character -- Combine while command word is on / Commands are always LOWERCASE
         else 
             self.table_string[#self.table_string+1] = character -- push a single character otherwise
         end
@@ -294,9 +351,9 @@ function M:send(text, wrap_num, show_all, wrap_font)
                     pixel_count_last_space = pixel_count_last_space + self.icon_width
                 end
                 if self.table_string[i]:match("font") then 
-                    local font_table = string_to_table(font_table)
-                    if true and self.table_string[i] ~= special_character[1] .. "/font" .. special_character[2] then 
+                    if true and font_table ~= nil and self.table_string[i] ~= special_character[1] .. "/font" .. special_character[2] then 
                         --print(self.table_string[i]:sub(7, #self.table_string[i]-1))
+                        local font_table = string_to_table(font_table)
                         love.graphics.setFont(font_table[self.table_string[i]:sub(7, #self.table_string[i]-1)])
                     else 
                         love.graphics.setFont(self.default_font)
@@ -329,9 +386,9 @@ function M:send(text, wrap_num, show_all, wrap_font)
                         pixel_count_last_space = pixel_count_last_space + self.icon_width
                     end
                     if self.table_string[i]:match("font") then 
-                        local font_table = string_to_table(font_table)
-                        if true and self.table_string[i] ~= special_character[1] .. "/font" .. special_character[2] then 
+                        if true and font_table ~= nil and self.table_string[i] ~= special_character[1] .. "/font" .. special_character[2] then 
                             --print(self.table_string[i]:sub(7, #self.table_string[i]-1))
+                            local font_table = string_to_table(font_table)
                             love.graphics.setFont(font_table[self.table_string[i]:sub(7, #self.table_string[i]-1)])
                         else 
                             love.graphics.setFont(self.default_font)
@@ -364,13 +421,12 @@ function M:send(text, wrap_num, show_all, wrap_font)
         end
     end
 
-  
     ------------------------------------------------------------------------------
     -- Forces the string to display without drawing one at a time.
     -- Also removes any banned commands from instant display.
     ------------------------------------------------------------------------------
     if show_all then 
-        local banned_commands = {"backspace", "pause", "skip", "audio", } -- HACK: Some commands are not allowed when showing all the text at once.
+        local banned_commands = {"backspace", "pause", "skip", "audio", "waitforinput" } -- HACK: Some commands are not allowed when showing all the text at once.
         for i = 1, #self.table_string do 
             for x=1, #banned_commands do 
                 if self.table_string[i]:match(banned_commands[x]) then 
@@ -396,9 +452,6 @@ function M:send(text, wrap_num, show_all, wrap_font)
         end
     end
 
-    if wrap_font ~= nil then 
-        love.graphics.setFont(current_system_font) 
-    end
 
 end
 
@@ -479,7 +532,9 @@ function M:update(dt)
             -----------------------------------------------------------------------------
             -- Printing Characters Timer
             -----------------------------------------------------------------------------
-            self.timer_print = self.timer_print + dt -- Timer counts up in seconds.
+            if not self.waitforinput then
+                self.timer_print = self.timer_print + dt -- Timer counts up in seconds.
+            end
     
             if self.timer_print > self.current_print_speed then 
                 self.timer_print = 0    -- If we hit the print speed, we reset the timer.
@@ -547,6 +602,25 @@ M.command_table = {
     ["end"] = 
     function(self) 
         self:setDefaults()  
+    end,
+
+    --[[ Do this function ]]---------------------------------------------------------
+    ["function"] = 
+    function(self) one_time_command(self,self.command_modifer[1])
+        if not function_command then return end
+        local full_command = table_shallow_copy(self.command_modifer)
+        table.remove(full_command, 1)
+        local _mod1 = table.concat(full_command, special_character[4])
+        --print(_mod1)
+        local f = loadstring(_mod1)
+        f()
+    end,
+
+    --[[ Runs at end of string ]]------------------------------------------------
+    ["waitforinput"] = 
+    function(self) 
+        one_time_command(self,self.command_modifer[1])
+        self.waitforinput = true
     end,
 
     -----------------------------------------------------------------------------
@@ -657,7 +731,6 @@ M.command_table = {
     --[[ Set the text color ]]---------------------------------------------------
     ["color"] = -- Sets the current color to a color on your palette table.
     function(self)
-        local palette_table = string_to_table(palette_table)
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then 
             _mod1 = tostring(self.command_modifer[2])
@@ -677,6 +750,8 @@ M.command_table = {
             end
         return 
         end
+        if not palette_table then return end
+        local palette_table = string_to_table(palette_table)
         if _mod1 > #palette_table then return end
         if _mod1 < 1 then return end
         self.current_color = palette_table[_mod1]
@@ -689,7 +764,7 @@ M.command_table = {
     --[[ Set the text shadow color ]]---------------------------------------------------
     ["shadowcolor"] = 
     function(self)
-        local palette_table = string_to_table(palette_table)
+        
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then 
             _mod1 = tostring(self.command_modifer[2])
@@ -709,6 +784,8 @@ M.command_table = {
             end
         return 
         end
+        if not palette_table then return end
+        local palette_table = string_to_table(palette_table)
         if _mod1 > #palette_table then return end
         if _mod1 < 1 then return end
         self.current_shadow_color = palette_table[_mod1]
@@ -721,6 +798,7 @@ M.command_table = {
     --[[ Set the font ]]--------------------------------------------------------
     ["font"] =
     function(self)
+        if not font_table then return end
         local font_table = string_to_table(font_table)
         local _mod1 = self.command_modifer[2]
         if font_table[_mod1] then 
@@ -732,11 +810,15 @@ M.command_table = {
 
     --[[ Reset the font ]]------------------------------------------------------
     ["/font"] = -- Resets the font to default.
-    function(self) love.graphics.setFont(self.default_font) end,
+    function(self) 
+        if not font_table then return end
+        love.graphics.setFont(self.default_font) 
+    end,
 
     --[[ Set the shader ]]------------------------------------------------------
     ["shader"] =
     function(self)
+    if not shader_table then return end
         local shader_table = string_to_table(shader_table)
         local _mod1 = self.command_modifer[2]
         if shader_table[_mod1] then 
@@ -886,24 +968,25 @@ M.command_table = {
     function(self) self.draw_flags.rainbow = false self.current_color = self.default_color end,
 
     -----------------------------------------------------------------------------
-    --  Image Commands TODO
+    --  Image Commands
     -----------------------------------------------------------------------------
-    --[[ Draw an icon 
-    hack to make work with your icon library]]---------------------------------------------------------
-   --[[ ["icon"] = 
+    --[[ Draw an icon ]]---------------------------------------------------------
+    ["icon"] = 
     function(self)
+        if not icon_table then return end
         local icon_table = string_to_table(icon_table)
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then return end
-        if _mod1 > #icon_table.number then return end
+        if _mod1 > icon_table["count"]() then return end
         if _mod1 < 1 then return end
-        icon_table.draw(_mod1, self.tx + self.cursor.x, self.ty + self.cursor.y)
+        icon_table["draw"](_mod1, self.tx + self.cursor.x, self.ty + self.cursor.y)
         self.cursor.x = self.cursor.x + 16
-    end,]]--
+    end,
 
     --[[ Draw a picture ]]-------------------------------------------------------
     ["image"] = 
     function(self)    
+        if not image_table then return end
         local image_table = string_to_table(image_table)
         local _mod1 = self.command_modifer[2]
         local _mod2 = self.command_modifer[3]
@@ -923,10 +1006,10 @@ M.command_table = {
   function(self) 
       one_time_command(self,self.command_modifer[1]) 
       local _mod1 = tonumber(self.command_modifer[2])
-      --print("Pause", _mod1)
       if type(_mod1) ~= "number" then self.character_sound = self.default_character_sound end
       if _mod1 <= 0 then self.character_sound = false end
       if _mod1 > #text_sounds then self.character_sound = false end
+      self.character_sound = true
       self.sound_number = _mod1 
   end,
   --[[ Reset to the default voice ]]-----------------------------------------------
@@ -967,6 +1050,7 @@ M.command_table = {
   --[[ Play a sound ]] ----------------------------------------------------
       ["audio"] = 
       function(self) one_time_command(self,self.command_modifer[1])
+        if not audio_table then return end
           local audio_table = string_to_table(audio_table)
           local _mod1 = self.command_modifer[2]
           local _mod2 = self.command_modifer[3]
@@ -976,7 +1060,8 @@ M.command_table = {
       end,
   --[[ Stop a sound ]] ----------------------------------------------------
       ["/audio"] = 
-      function(self)    
+      function(self)
+        if not audio_table then return end
         one_time_command(self,self.command_modifer[1])
           local audio_table = string_to_table(audio_table)
           local _mod1 = self.command_modifer[2]
@@ -985,6 +1070,8 @@ M.command_table = {
               audio_table[_mod1][_mod2]:stop()     
           end
       end,
+
+
 }
 
 --[[----------------------------------------------------------------------------------------------------
@@ -998,6 +1085,8 @@ function M:doCommand(command)
         splitcommands = split_string_by(command, "=") -- Split commands into tables
         command = splitcommands[1] -- Make sure that the command is still sent as normal
         self.command_modifer = splitcommands -- Send the command modifiers to a place we can access them
+    else 
+        self.command_modifer  = {command}
     end
     if self.command_table[command] then -- If found 
         return self.command_table[command] -- Return the command function
@@ -1139,20 +1228,23 @@ function M:addDraw(str, tx, ty, i)
 
     if self.draw_flags.underline then 
       love.graphics.setColor(self.current_color)
-      love.graphics.rectangle("fill", self.tx + self.cursor.x, self.ty + self.cursor.y + get_character_height(self.table_string[i]) - 2, get_character_width(self.table_string[i]), 1)
+      love.graphics.rectangle("fill", self.tx + self.cursor.x, self.ty + self.cursor.y + get_character_height(self.table_string[i]) + 1, get_character_width(self.table_string[i]), 1)
     end
 
     if self.draw_flags.strikethrough then 
       love.graphics.setColor(self.current_color)
-      love.graphics.rectangle("fill", self.tx + self.cursor.x, self.ty + self.cursor.y + math.floor(get_character_height(self.table_string[i])/2) + 2, get_character_width(self.table_string[i]), 1)
+      love.graphics.rectangle("fill", self.tx + self.cursor.x, self.ty + self.cursor.y + math.floor(get_character_height(self.table_string[i])/2) + 4, get_character_width(self.table_string[i]), 1)
     end
 
     love.graphics.setColor(1,1,1,1)
 end
 
 --[[ Generate Class ]]-----------------------------------------------------------
-function m.new(rendering, autotags) -- Todo, configuration at runtime.
+function m.new(rendering, table_settings) -- Todo, configuration at runtime.
     rendering = rendering or "left" -- Left, Center, Right, Full
+    
+    if type(table_settings) ~= "table" then table_settings = {} end
+    local autotags = table_settings.autotags
     if autotags ~= nil then autotags = tostring(autotags) end
     local self = {}
     setmetatable(self, { __index = M })
@@ -1167,26 +1259,27 @@ function m.new(rendering, autotags) -- Todo, configuration at runtime.
     self.timer_animation = 0
     self.timer_pause = 0
     self.sound_every_counter = 1
+    self.waitforinput = false
     -- Text
     self.prefix = autotags or ""
-    self.default_font = love.graphics.getFont()
-    self.default_color = {0.05,0.05,0.05,1}
+    self.default_font = table_settings.font or love.graphics.getFont()
+    self.default_color = table_settings.color or {0.05,0.05,0.05,1}
     self.current_color = self.default_color
-    self.default_shadow_color = {0.5, 0.5, 0.5, 1}
+    self.default_shadow_color = table_settings.shadow_color or {0.5, 0.5, 0.5, 1}
     self.current_shadow_color = self.default_shadow_color
-    self.default_print_speed = 0.05
+    self.default_print_speed = table_settings.print_speed or 0.05
     self.current_print_speed = self.default_print_speed
     self.rendering = rendering
     self.default_adjust_line_height = 0
     self.adjust_line_height = self.default_adjust_line_height
     -- Text Sounds
-    self.default_character_sound = true
+    self.default_character_sound = table_settings.character_sound or true
     self.character_sound = self.default_character_sound
-    self.default_sound_every = 2
+    self.default_sound_every = table_settings.sound_every or 2
     self.sound_every = self.default_sound_every
-    self.default_sound_number = 1
+    self.default_sound_number = table_settings.sound_number or 1
     self.sound_number = self.default_sound_number
-    self.default_warble = 0
+    self.default_warble = table_settings.warble or 0
     self.warble = self.default_warble
     -- Commands 
     self.icon_width = 16
