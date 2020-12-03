@@ -1,4 +1,4 @@
-# SLog-Text
+# SYSL-Text
 **Please see the "main.lua" for samples, please review the library for all the possible tags.**
 
 ![Quick Demo of Examples](/screenshots/ex.gif?raw=true "Quick Demo of Examples")
@@ -31,7 +31,7 @@ my_cool_textbox:draw(0,0)
 my_cool_textbox:update(dt)
 ```
 # Tags
-SLog-Text supports tags in ```[these brackets]``` and will use them to apply effects to your rendered text. SLog-Text also supports defining default styles per textbox. Please take a look at the examples below.
+SYSL-Text supports tags in ```[these brackets]``` and will use them to apply effects to your rendered text. SYSL-Text also supports defining default styles per textbox. Please take a look at the examples below.
 
 ## Tags with Screenshot Examples
 ![Example 1](/screenshots/1.gif?raw=true "Example of Library")
