@@ -1,5 +1,5 @@
 local m = {
-    debug        = true,
+    debug        = false,
     _NAME        = 'SYSL-Text',
     _VERSION     = '1.5',
     _DESCRIPTION = 'Fancy Text System',

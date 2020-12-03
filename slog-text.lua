@@ -1,5 +1,5 @@
 local m = {
-    debug        = true,
+    debug        = false,
     _NAME        = 'SYSL-Text',
     _VERSION     = '1.5',
     _DESCRIPTION = 'Fancy Text System',
@@ -115,7 +115,7 @@ local function convert_special_character(char)
 end
 
 --[[ Get character Width ]]-----------------------------------------------------------------------------
--- Get the width of the current character width the current font.
+-- Get the width of the current character width the current font. -- L2R?
 local function get_character_width(character)
     return love.graphics.getFont():getWidth(character)
 end
@@ -991,10 +991,13 @@ M.command_table = {
         local _mod1 = self.command_modifer[2]
         local _mod2 = self.command_modifer[3]
         if image_table[_mod1] and image_table[_mod1][_mod2] then
-            love.graphics.draw(image_table[_mod1][_mod2], self.cursor.x, self.cursor.y)
+            love.graphics.draw(image_table[_mod1][_mod2], self.tx + self.cursor.x, self.ty + self.cursor.y)
             self.cursor.x = self.cursor.x + image_table[_mod1][_mod2]:getWidth()
+        elseif image_table[_mod1] then 
+            love.graphics.draw(image_table[_mod1], self.tx + self.cursor.x, self.ty + self.cursor.y)
+            self.cursor.x = self.cursor.x + image_table[_mod1]:getWidth()
         else 
-            love.graphics.draw(undefined_image, self.cursor.x, self.cursor.y)
+            love.graphics.draw(undefined_image, self.tx + self.cursor.x, self.ty + self.cursor.y)
             self.cursor.x = self.cursor.x + undefined_image:getWidth()            
         end
     end,
@@ -1273,7 +1276,7 @@ function m.new(rendering, table_settings) -- Todo, configuration at runtime.
     self.default_adjust_line_height = 0
     self.adjust_line_height = self.default_adjust_line_height
     -- Text Sounds
-    self.default_character_sound = table_settings.character_sound or true
+    self.default_character_sound = table_settings.character_sound
     self.character_sound = self.default_character_sound
     self.default_sound_every = table_settings.sound_every or 2
     self.sound_every = self.default_sound_every
