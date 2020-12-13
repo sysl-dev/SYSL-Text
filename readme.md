@@ -3,6 +3,7 @@
 
 ![Quick Demo of Examples](/screenshots/ex.gif?raw=true "Quick Demo of Examples")
 
+
 # Setup
 ## Adding the library to your project
 ```lua
@@ -30,6 +31,22 @@ my_cool_textbox:draw(0,0)
 -- in love.update(dt)
 my_cool_textbox:update(dt)
 ```
+
+# UTF8 Text Note 
+UTF8 characters need to be wrapped in ```[|t][|a][|g][|s]``` to work. 
+You could also write something to preprocess your text before sending it to SYSL-Text.
+
+## Quick text wrapper in Notepad++ replace command
+```
+//Find: 
+(.) 
+
+//Replace 
+[|$1] 
+```
+
+
+
 # Tags
 SYSL-Text supports tags in ```[these brackets]``` and will use them to apply effects to your rendered text. SYSL-Text also supports defining default styles per textbox. Please take a look at the examples below.
 
