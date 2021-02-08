@@ -3,6 +3,8 @@
 
 ![Quick Demo of Examples](/screenshots/ex.gif?raw=true "Quick Demo of Examples")
 
+# Update Notes
+* It is no longer required to wrap UTF8 characters. You can send them without the wrapping and the library will scan and wrap extended characters without any manual input. 
 
 # Setup
 ## Adding the library to your project
@@ -32,29 +34,14 @@ my_cool_textbox:draw(0,0)
 my_cool_textbox:update(dt)
 ```
 
-# UTF8 Text Note 
-UTF8 characters need to be wrapped in ```[|t][|a][|g][|s]``` to work. 
-You could also write something to preprocess your text before sending it to SYSL-Text.
-
-## Quick text wrapper in Notepad++ replace command
-```
-//Find: 
-(.) 
-
-//Replace 
-[|$1] 
-```
-
-
-
 # Tags
-SYSL-Text supports tags in ```[these brackets]``` and will use them to apply effects to your rendered text. SYSL-Text also supports defining default styles per textbox. Please take a look at the examples below.
+SYSL-Text supports tags in ```[these brackets]``` and will use them to apply effects to your rendered text. SYSL-Text also supports defining default styles per textbox. Please take a look at the examples below. **Please note that effects and style are only examples, the library does not provide backgrounds or textboxes.**
 
 ## Tags with Screenshot Examples
 ![Example 1](/screenshots/1.gif?raw=true "Example of Library")
 ```lua
 example2box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = true})
-example2box:send("[|•] Do you like eggs?[newline][|•] I think they are [pad=6]eggzelent![audio=sfx=laugh]", 100, false)
+example2box:send("• Do you like eggs?[newline]• I think they are [pad=6]eggzelent![audio=sfx=laugh]", 100, false)
 ```
 ![Example 2](/screenshots/2.gif?raw=true "Example of Library")
 ```lua

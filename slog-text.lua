@@ -36,6 +36,7 @@ local m = {
 ----------------------------------------------------------------------------------------------------]]--                                                                 
 local unpack = unpack
 local love = love
+local utf8 = require("utf8")
 
 --[[----------------------------------------------------------------------------------------------------
         Debug Print - Confirms Loaded when m.debug is true.
@@ -115,7 +116,7 @@ local function convert_special_character(char)
 end
 
 --[[ Get character Width ]]-----------------------------------------------------------------------------
--- Get the width of the current character width the current font. -- L2R?
+-- Get the width of the current character width the current font.
 local function get_character_width(character)
     return love.graphics.getFont():getWidth(character)
 end
@@ -254,6 +255,18 @@ end
        SEND - Sends a string to be drawn by the current textbox.
 ----------------------------------------------------------------------------------------------------]]-- 
 function M:send(text, wrap_num, show_all)
+
+    -- This whole things just fixes UTF8 characters.
+    local words = {}
+    for _, c in utf8.codes(text) do
+      if #utf8.char(c) > 1 then 
+        table.insert(words, special_character[1] .. special_character[5] .. utf8.char(c) .. special_character[2])
+      else   
+        table.insert(words, utf8.char(c))
+      end
+    end
+    text = table.concat(words)
+
     self.current_character = #self.table_string
     self.current_print_speed = self.default_print_speed
     self.waitforinput = false
@@ -312,14 +325,14 @@ function M:send(text, wrap_num, show_all)
         local space_count = 0
         local fulljustspace = {}
         for i=1, #self.table_string do 
-            if #self.table_string[i] == 1 or self.table_string[i]:sub(1,2) == special_character[1] .. "|" then 
+            if #self.table_string[i] == 1 or self.table_string[i]:sub(1,2) == special_character[1] .. special_character[5] then 
                 -- Keep track of the last space.
                 if self.table_string[i] == " " then 
                     last_space = i 
                     pixel_count_last_space = 0
                 end
                 -- Count the pixels for the characters 
-                if self.table_string[i]:sub(1,2) == special_character[1] .. "|" then -- Have to count wrapped strings
+                if self.table_string[i]:sub(1,2) == special_character[1] .. special_character[5] then -- Have to count wrapped strings
                     pixel_count = pixel_count + get_character_width(self.table_string[i]:sub(3, #self.table_string[i]-1))
                     --print(get_character_width(self.table_string[i]:sub(3, #self.table_string[i]-1)))
                 else 
@@ -354,7 +367,9 @@ function M:send(text, wrap_num, show_all)
                     if true and font_table ~= nil and self.table_string[i] ~= special_character[1] .. "/font" .. special_character[2] then 
                         --print(self.table_string[i]:sub(7, #self.table_string[i]-1))
                         local font_table = string_to_table(font_table)
-                        love.graphics.setFont(font_table[self.table_string[i]:sub(7, #self.table_string[i]-1)])
+                        if font_table[self.table_string[i]:sub(7, #self.table_string[i]-1)] then
+                            love.graphics.setFont(font_table[self.table_string[i]:sub(7, #self.table_string[i]-1)])
+                        end
                     else 
                         love.graphics.setFont(self.default_font)
                     end
@@ -364,8 +379,8 @@ function M:send(text, wrap_num, show_all)
         if self.rendering ~= "left" then
             pixel_count = 0
             for i=1, #self.table_string do 
-                if #self.table_string[i] == 1 or self.table_string[i]:sub(1,2) == special_character[1] .. "|"  then  -- Have to count wrapped strings 
-                    if self.table_string[i]:sub(1,2) == special_character[1] .. "|" then 
+                if #self.table_string[i] == 1 or self.table_string[i]:sub(1,2) == special_character[1] .. special_character[5]  then  -- Have to count wrapped strings 
+                    if self.table_string[i]:sub(1,2) == special_character[1] .. special_character[5] then 
                         pixel_count = pixel_count + get_character_width(self.table_string[i]:sub(3, #self.table_string[i]-1))
                     else 
                         pixel_count = pixel_count + get_character_width(self.table_string[i])
@@ -993,7 +1008,7 @@ M.command_table = {
         if image_table[_mod1] and image_table[_mod1][_mod2] then
             love.graphics.draw(image_table[_mod1][_mod2], self.tx + self.cursor.x, self.ty + self.cursor.y)
             self.cursor.x = self.cursor.x + image_table[_mod1][_mod2]:getWidth()
-        elseif image_table[_mod1] then 
+        elseif image_table[_mod1] and type(image_table[_mod1]) ~= "table" then 
             love.graphics.draw(image_table[_mod1], self.tx + self.cursor.x, self.ty + self.cursor.y)
             self.cursor.x = self.cursor.x + image_table[_mod1]:getWidth()
         else 
@@ -1059,6 +1074,8 @@ M.command_table = {
           local _mod2 = self.command_modifer[3]
           if audio_table[_mod1] and audio_table[_mod1][_mod2] then
               audio_table[_mod1][_mod2]:play()     
+          elseif type(audio_table[_mod1]) ~= "table" then 
+            audio_table[_mod1]:play() 
           end
       end,
   --[[ Stop a sound ]] ----------------------------------------------------
@@ -1071,7 +1088,9 @@ M.command_table = {
           local _mod2 = self.command_modifer[3]
           if audio_table[_mod1] and audio_table[_mod1][_mod2] then
               audio_table[_mod1][_mod2]:stop()     
-          end
+            elseif type(audio_table[_mod1]) ~= "table" then 
+                audio_table[_mod1]:stop() 
+              end
       end,
 
 
