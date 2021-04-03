@@ -312,30 +312,30 @@ Note, all numbers are optional. You can use the ```[tag]``` without them, it wil
 ![Example 10](/screenshots/effects.gif?raw=true "Example of Rotate")
 ### shake 
 ```lua 
-[shake=number]Shake[/shake]
+"[shake=number]Shake[/shake]"
 ```
 ### spin 
 ```lua 
-[spin=number]spin[/spin]
+"[spin=number]spin[/spin]"
 ```
 ### swing 
 ```lua 
-[swing=number]swing[/swing] 
+"[swing=number]swing[/swing]"
 ```
 ### raindrop 
 ```lua 
-[raindrop=number]raindrop[/raindrop]
+"[raindrop=number]raindrop[/raindrop]"
 ```
 ### bounce 
 ```lua 
-[bounce=number]bounce[/bounce]
+"[bounce=number]bounce[/bounce]"
 ```
 ### blink 
 ```lua 
-[blink=number]blink[/blink]
+"[blink=number]blink[/blink]"
 ```
 ### rainbow 
 ```lua 
-[rainbow=number(speed)=number(brightness of color)]rainbow[/rainbow]
+"[rainbow=number(speed)=number(brightness of color)]rainbow[/rainbow]"
 ```
 
