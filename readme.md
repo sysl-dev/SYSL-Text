@@ -74,9 +74,26 @@ example5box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5
 example5box:send("[dropshadow=3][function=example.ex5_textboxsize=64][textspeed=0.02]With the Power of Queens, they challenged the Snakes. Garry's mighty waves peeled apart their diamond scales. The Wizards woke[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]mighty windstorms. Niza brought the deadly wine[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]and cheese. [audio=sfx=ui]", 320-16, false)
 
 ```
-
-# Tags Notes 
-Some tags will not work until you let the library know something about your game. I will list them all below.
+# Default Textbox Settings 
+```lua 
+local default_settings = {
+    autotags = "[tab]", -- This string is added at the start of every textbox, can include tags.
+    font = font.default, -- Default font for the textbox, love font object.
+    color = {1,1,1,1}, -- Default text color.
+    shadow_color = {1,1,1,1}, -- Default Drop Shadow Color.
+    print_speed = 0.2, -- How fast text prints.
+    default_strikethrough_position = 0, -- Adjust the position of the strikethough line.
+    default_underline_position = 0, -- Adjust the position of the underline line.
+    character_sound = false, -- Use a voice when printing characters? True or false.
+    sound_number = 0, -- What voice to use when printing characters.
+    sound_every = 2, -- How many characters to wait before making another noise when printing text.
+    default_warble = 0 -- How much to adjust the voice when printing each character. 
+}
+-- You can set some defaults for each textbox object to make things easier.
+textbox = Text.new("left", default_settings)
+```
+# Tag Notes 
+Some tags will not work until you let the library know something about your game.
 
 ## Audio
 ```lua
@@ -172,7 +189,8 @@ Text.configure.function_command_enable(enable_bool)
 ```
 This nightmare will allow you to write direct lua code into a string to execute. It's off by default. Please be careful when using. **Do not use unless you sandbox your text.**
 
-## Other Tags
+# Standard Tags
+## Not Animated
 ### end
 ```lua 
 "[end]" -- System tag, added to the end of every string.
