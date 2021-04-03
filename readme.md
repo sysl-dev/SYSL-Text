@@ -56,17 +56,17 @@ example4box:send("[dropshadow=2][b]Old Man:[/b][newline]Hello young man. How are
 ![Example 4](/screenshots/4.png?raw=true "Example of Library")
 ```lua
 example6box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue, character_sound = true, sound_every = 5, sound_number = 2})
-example6box:send("Oh wow, you found the [bounce][rainbow]high-res[/rainbow][/bounce] text! [][icon=1][icon=2][icon=3][icon=4] [icon=5][icon=6][icon=7][icon=8] [icon=9][icon=10][icon=11][icon=12][/]", 320*4-16, true)
+example6box:send("Oh wow, you found the [bounce][rainbow]high-res[/rainbow][/bounce] text! [icon=1][icon=2][icon=3][icon=4] [icon=5][icon=6][icon=7][icon=8] [icon=9][icon=10][icon=11][icon=12][/]", 320*4-16, true)
 ```
 ![Example 5](/screenshots/5.gif?raw=true "Example of Library")
 ```lua
 example7box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_big, character_sound = true, sound_every = 3, sound_number = 3})
-example7box:send("[warble=-5][textspeed=0.02][][image=witch][pad=32]There's something I have to say,[pause=0.7][] [warble=5]this witch will save the day!", 320*4-16, false)
+example7box:send("[warble=-5][textspeed=0.02][image=witch][pad=32]There's something I have to say,[pause=0.7] [warble=5]this witch will save the day!", 320*4-16, false)
 ```
 ![Example 6](/screenshots/6.gif?raw=true "Example of Library")
 ```lua
 example8box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_small, character_sound = true, print_speed = 0.04, sound_every = 2, sound_number = 4})
-example8box:send("[function=example.bop=true]Did you hear about the [color=#FF0000]bad puns?[/color][pause=0.5] You did?![pause=0.5] That's [color=#FFFF00]great[/color][pause=0.8]!  [shake]Now I don't have to tell you about them![/shake][pause=1][][function=example.bop=false][][audio=sfx=laugh]", 320-80, false)
+example8box:send("[function=example.bop=true]Did you hear about the [color=#FF0000]bad puns?[/color][pause=0.5] You did?![pause=0.5] That's [color=#FFFF00]great[/color]![pause=0.8]  [shake]Now I don't have to tell you about them![/shake][pause=1][function=example.bop=false][audio=sfx=laugh]", 320-80, false)
 ```
 ![Example 7](/screenshots/7.gif?raw=true "Example of Library")
 ```lua
@@ -170,4 +170,172 @@ Used like: "[shader=blur]
 --Text.configure.function_command_enable(enable_bool)
 Text.configure.function_command_enable(enable_bool)
 ```
-This nightmare will allow you to write direct lua code into a string to execute. It's off by default. Please be careful when using.
+This nightmare will allow you to write direct lua code into a string to execute. It's off by default. Please be careful when using. **Do not use unless you sandbox your text.**
+
+## Other Tags
+### end
+```lua 
+"[end]" -- System tag, added to the end of every string.
+```
+### waitforinput
+```lua 
+"[waitforinput]" -- Pauses printing characters until the
+-- Text:continue() command is sent from somewhere in your code.
+```
+### newline
+```lua 
+"[newline]" -- Start printing on a new line, added automatically when autowrap is on.
+```
+### cursorsave
+```lua 
+"[cursorsave]" -- Save the current location of where we are typing to in the textbox.
+```
+### cursorload
+```lua 
+"[cursorload]" -- Restore the current location of where we are typing to in the textbox from when we last saved with [cursorsave].
+```
+### cursorx
+```lua 
+"[cursorx=number]" -- Set the cursor position as Textbox X position + x
+```
+### cursory
+```lua 
+"[cursory=number]" -- Set the cursor position as Textbox Y position + y
+```
+### tab
+```lua 
+"[tab]" -- Pad 4 spaces. Same as "    ".
+```
+### pad
+```lua 
+"[pad=number]" -- Pad this many pixels.
+```
+### lineheight
+```lua 
+"[lineheight=number]" -- Set the height for each line to this many pixels.
+```
+### skip
+```lua 
+"[skip]" -- Skip rendering the remaining characters character by character, draw the full text.
+```
+### pause
+```lua 
+"[pause]" -- Wait this many seconds (can use 0. for less than one second). Does not do anything if textbox is set to show everything. May interact badly with skip.
+```
+### backspace
+```lua 
+"[backspace=number]" -- Erase this many printed characters and start printing from that point. Very fragile, do not backspace over commands.
+```
+### textspeed
+```lua 
+"[textspeed=number]" -- Change how fast text is printed, wait this long in seconds before printing the next character. 0.2 is the default.
+```
+### /textspeed
+```lua 
+"[/textspeed]" -- Reset textspeed to the default
+```
+### color
+```lua 
+"[color=#BEEEEF]" -- Set color to the hex color.
+```
+### /color
+```lua 
+"[/color]" -- Reset to the default color.
+```
+### shadowcolor
+```lua 
+"[shadowcolor=#BEEEEF]" -- Set shadow color to the hex color.
+```
+### /shadowcolor
+```lua 
+"[/shadowcolor]" -- Reset to the default shadow color.
+```
+### dropshadow
+![Example 8](/screenshots/dropshadow.png?raw=true "Example of Dropshadow")
+```lua 
+"[dropshadow=number]" -- Draw a dropshadow behind the text
+-- 1 - Lower Left
+-- 2 - Below
+-- 3 - Lower Right
+-- 4 - Left 
+-- 5 - Thin Outline 
+-- 6 - Right 
+-- 7 - Upper Left 
+-- 8 - Above 
+-- 9 - Upper Right 
+-- 10 - Thick Outline
+```
+### /dropshadow
+```lua 
+"[/dropshadow]" -- Turn off dropshadow.
+```
+### scale
+```lua 
+"[scale=number]" -- Scale the text.
+```
+### /scale
+```lua 
+"[/scale]" -- Reset the scale.
+```
+### rotate
+![Example 9](/screenshots/rotate.png?raw=true "Example of Rotate")
+```lua 
+"[rotate=number]" -- Rotate the text characters.
+```
+### /rotate
+```lua 
+"[/rotate]" -- Reset the rotation.
+```
+### b, i, u, s
+![Example 11](/screenshots/bius.png?raw=true "Example of bius")
+```lua 
+"[b]BOLD[/b]" -- Fake Bold.
+"[i]ITALICS[/i]" -- Fake Italics.
+"[u]UNDERLINE[/u]" -- Underline.
+"[s]STRIKETHROUGH[/s]" -- Strikethrough.
+-- Note, you can adjust the position of the line of underline and strikethough by doing [u=number]/[s=number] positive or negative. 
+-- Some fonts do not report height as nice as it could. 
+-- You can also set the default for the new textbox so you do not have to do this for each underline and strikethrough.
+```
+### mirror
+![Example 10](/screenshots/mirror.png?raw=true "Example of Mirror")
+```lua 
+"[mirror=number]" -- Print text reversed.
+```
+### /mirror
+```lua 
+"[/mirror]" -- Stop the reverse.
+```
+## Animated Tags
+Note, all numbers are optional. You can use the ```[tag]``` without them, it will use the default speed.
+
+![Example 10](/screenshots/effects.gif?raw=true "Example of Rotate")
+### shake 
+```lua 
+[shake=number]Shake[/shake]
+```
+### spin 
+```lua 
+[spin=number]spin[/spin]
+```
+### swing 
+```lua 
+[swing=number]swing[/swing] 
+```
+### raindrop 
+```lua 
+[raindrop=number]raindrop[/raindrop]
+```
+### bounce 
+```lua 
+[bounce=number]bounce[/bounce]
+```
+### blink 
+```lua 
+[blink=number]blink[/blink]
+```
+### rainbow 
+```lua 
+[rainbow=number(speed)=number(brightness of color)]rainbow[/rainbow]
+```
+

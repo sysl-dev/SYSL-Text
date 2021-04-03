@@ -150,11 +150,11 @@ boptimer = 1,
 function love.load() 
 -- Set up examples
 -- Example 1 // Default Font // Examples 
-example1box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}})
+example1box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, default_underline_position = -2, default_strikethrough_position = 1})
 example1box:send(example.long_text_block, 320*4, true)
 -- Example 2 // Golden Apple Font // Earthbound Style Box
 example2box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = true})
-example2box:send("[|•] Do you like eggs?[newline][|•] I think they are [pad=6]eggzelent![audio=sfx=laugh]", 100, false)
+example2box:send("• Do you like eggs?[newline]• I think they are [pad=6]eggzelent![audio=sfx=laugh]", 100, false)
 -- Example 3 // Golden Apple Font // Mother 3 Style Bottom 
 example3box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = false, print_speed = 0.02})
 example3box:send("I am a very cute [color=#00ff00]green frog[/color]. Would you like to eat dinner with me? It's [rainbow][bounce]fresh[/bounce] [u]fly[/u] [shake]soup[/shake]![/rainbow]", 316, false)
@@ -166,13 +166,13 @@ example5box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5
 example5box:send("[dropshadow=3][function=example.ex5_textboxsize=64][textspeed=0.02]With the Power of Queens, they challenged the Snakes. Garry's mighty waves peeled apart their diamond scales. The Wizards woke[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]mighty windstorms. Niza brought the deadly wine[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]and cheese. [audio=sfx=ui]", 320-16, false)
 --Example 6 // Comic Neue / Center Box
 example6box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue, character_sound = true, sound_every = 5, sound_number = 2})
-example6box:send("Oh wow, you found the [bounce][rainbow]high-res[/rainbow][/bounce] text! [][icon=1][icon=2][icon=3][icon=4] [icon=5][icon=6][icon=7][icon=8] [icon=9][icon=10][icon=11][icon=12][/]", 320*4-16, true)
+example6box:send("Oh wow, you found the [bounce][rainbow]high-res[/rainbow][/bounce] text! [icon=1][icon=2][icon=3][icon=4] [icon=5][icon=6][icon=7][icon=8] [icon=9][icon=10][icon=11][icon=12][/]", 320*4-16, true)
 --Example 7 // Comic Neue Big / BoxBK Style
 example7box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_big, character_sound = true, sound_every = 3, sound_number = 3})
-example7box:send("[warble=-5][textspeed=0.02][][image=witch][pad=32]There's something I have to say,[pause=0.7][] [warble=5]this witch will save the day!", 320*4-16, false)
+example7box:send("[warble=-5][textspeed=0.02][image=witch][pad=32]There's something I have to say,[pause=0.7] [warble=5]this witch will save the day!", 320*4-16, false)
 --Example 8 // Comic Neue / Undertale Style
 example8box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_small, character_sound = true, print_speed = 0.04, sound_every = 2, sound_number = 4})
-example8box:send("[function=example.bop=true]Did you hear about the [color=#FF0000]bad puns?[/color][pause=0.5] You did?![pause=0.5] That's [color=#FFFF00]great[/color][pause=0.8]!  [shake]Now I don't have to tell you about them![/shake][pause=1][][function=example.bop=false][][audio=sfx=laugh]", 320-80, false)
+example8box:send("[function=example.bop=true]Did you hear about the [color=#FF0000]bad puns?[/color][pause=0.5] You did?![pause=0.5] That's [color=#FFFF00]great[/color][pause=0.8]!  [shake]Now I don't have to tell you about them![/shake][pause=1][function=example.bop=false][audio=sfx=laugh]", 320-80, false)
 end 
 
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
@@ -334,13 +334,13 @@ function love.keypressed( key, scancode, isrepeat )
 	end	
 	if example.display_mode == 7 then 
 		if key == "r" then 
-		example7box:send("[warble=-5][textspeed=0.02][][image=witch][pad=32]There's something I have to say,[pause=0.7][] [warble=5]this witch will save the day!", 320*4-16, false)
+		example7box:send("[warble=-5][textspeed=0.02][image=witch][pad=32]There's something I have to say,[pause=0.7] [warble=5]this witch will save the day!", 320*4-16, false)
 
 		end		
 	end
 	if example.display_mode == 8 then 
 		if key == "r" then 
-		example8box:send("[function=example.bop=true]Did you hear about the [color=#FF0000]bad puns?[/color][pause=0.5] You did?![pause=0.5] That's [color=#FFFF00]great[/color][pause=0.8]!  [shake]Now I don't have to tell you about them![/shake][pause=1][][function=example.bop=false][][audio=sfx=laugh]", 320-80, false)
+		example8box:send("[function=example.bop=true]Did you hear about the [color=#FF0000]bad puns?[/color][pause=0.5] You did?![pause=0.5] That's [color=#FFFF00]great[/color]![pause=0.8] [shake]Now I don't have to tell you about them![/shake][pause=1][function=example.bop=false][audio=sfx=laugh]", 320-80, false)
 
 		end		
 	end
