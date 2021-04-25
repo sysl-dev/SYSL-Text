@@ -4,6 +4,11 @@
 ![Quick Demo of Examples](/screenshots/ex.gif?raw=true "Quick Demo of Examples")
 
 # Update Notes
+* New ```[scroll]``` command, will scroll the text up by line-height or a set value. Works well with ```love.graphics.setScissor```.
+* You have access to the basic calculated width, height and linecount for each textbox. Access is under the ```get``` table.
+    - ```my_cool_textbox.get.width, my_cool_textbox.get.height, my_cool_textbox.get.lines ```
+    - If you are using autowrap, the width calculation is more accurate.
+* Text animation commands now allow you to change the speed, or even reverse it.
 * It is no longer required to wrap UTF8 characters. You can send them without the wrapping and the library will scan and wrap extended characters without any manual input. 
 
 # Setup
@@ -40,38 +45,108 @@ SYSL-Text supports tags in ```[these brackets]``` and will use them to apply eff
 ## Tags with Screenshot Examples
 ![Example 1](/screenshots/1.gif?raw=true "Example of Library")
 ```lua
-example2box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = true})
+example2box = Text.new("left", 
+{ 
+    color = {1,1,1,1},
+    shadow_color = {0.5,0.5,1,0.4},
+    font = Fonts.golden_apple,
+    character_sound = true,
+    adjust_line_height = -3
+})
 example2box:send("• Do you like eggs?[newline]• I think they are [pad=6]eggzelent![audio=sfx=laugh]", 100, false)
 ```
 ![Example 2](/screenshots/2.gif?raw=true "Example of Library")
 ```lua
-example3box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = false, print_speed = 0.02})
+example3box = Text.new("left", 
+{ 
+    color = {1,1,1,1}, 
+    shadow_color = {0.5,0.5,1,0.4}, 
+    font = Fonts.golden_apple, 
+    character_sound = false, 
+    print_speed = 0.02,
+    adjust_line_height = -3
+    })
 example3box:send("I am a very cute [color=#00ff00]green frog[/color]. Would you like to eat dinner with me? It's [rainbow][bounce]fresh[/bounce] [u]fly[/u] [shake]soup[/shake]![/rainbow]", 316, false)
 ```
 ![Example 3](/screenshots/3.png?raw=true "Example of Library")
 ```lua
-example4box = Text.new("left", { color = {0,0,0,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.earth_illusion})
+example4box = Text.new("left", 
+{ 
+    color = {0,0,0,0.95}, 
+    shadow_color = {0.5,0.5,1,0.4}, 
+    font = Fonts.earth_illusion,
+    adjust_line_height = -2
+    })
 example4box:send("[dropshadow=2][b]Old Man:[/b][newline]Hello young man. How are you?", 74, true)
 ```
 ![Example 4](/screenshots/4.png?raw=true "Example of Library")
 ```lua
-example6box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue, character_sound = true, sound_every = 5, sound_number = 2})
+example6box = Text.new("left", 
+{ 
+    color = {0.9,0.9,0.9,0.95}, 
+    shadow_color = {0.5,0.5,1,0.4}, 
+    font = Fonts.comic_neue, character_sound = true, 
+    sound_every = 5, 
+    sound_number = 2
+    })
 example6box:send("Oh wow, you found the [bounce][rainbow]high-res[/rainbow][/bounce] text! [icon=1][icon=2][icon=3][icon=4] [icon=5][icon=6][icon=7][icon=8] [icon=9][icon=10][icon=11][icon=12][/]", 320*4-16, true)
 ```
 ![Example 5](/screenshots/5.gif?raw=true "Example of Library")
 ```lua
-example7box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_big, character_sound = true, sound_every = 3, sound_number = 3})
+example7box = Text.new("left", 
+{ 
+    color = {0.9,0.9,0.9,0.95}, 
+    shadow_color = {0.5,0.5,1,0.4}, 
+    font = Fonts.comic_neue_big, 
+    character_sound = true, 
+    sound_every = 3, 
+    sound_number = 3
+    })
 example7box:send("[warble=-5][textspeed=0.02][image=witch][pad=32]There's something I have to say,[pause=0.7] [warble=5]this witch will save the day!", 320*4-16, false)
 ```
 ![Example 6](/screenshots/6.gif?raw=true "Example of Library")
 ```lua
-example8box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_small, character_sound = true, print_speed = 0.04, sound_every = 2, sound_number = 4})
+example8box = Text.new("left", 
+{ 
+    color = {0.9,0.9,0.9,0.95}, 
+    shadow_color = {0.5,0.5,1,0.4}, 
+    font = Fonts.comic_neue_small, 
+    character_sound = true, 
+    print_speed = 0.04, 
+    sound_every = 2, 
+    sound_number = 4
+    })
 example8box:send("[function=example.bop=true]Did you hear about the [color=#FF0000]bad puns?[/color][pause=0.5] You did?![pause=0.5] That's [color=#FFFF00]great[/color]![pause=0.8]  [shake]Now I don't have to tell you about them![/shake][pause=1][function=example.bop=false][audio=sfx=laugh]", 320-80, false)
 ```
 ![Example 7](/screenshots/7.gif?raw=true "Example of Library")
 ```lua
-example5box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.earth_illusion, character_sound = true, sound_every = 5, sound_number = 2})
+example5box = Text.new("left", 
+{ 
+    color = {0.9,0.9,0.9,0.95}, 
+    shadow_color = {0.5,0.5,1,0.4}, 
+    font = Fonts.earth_illusion, 
+    character_sound = true, 
+    sound_every = 5, 
+    sound_number = 2,
+    adjust_line_height = -2,
+    })
 example5box:send("[dropshadow=3][function=example.ex5_textboxsize=64][textspeed=0.02]With the Power of Queens, they challenged the Snakes. Garry's mighty waves peeled apart their diamond scales. The Wizards woke[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]mighty windstorms. Niza brought the deadly wine[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]and cheese. [audio=sfx=ui]", 320-16, false)
+
+```
+![Example 8](/screenshots/8.gif?raw=true "Example of Library")
+```lua
+example9box = Text.new("left", 
+{ 
+    color = {0.9,0.9,0.9,0.95}, 
+    shadow_color = {0.5,0.5,1,0.4}, 
+    font = Fonts.comic_neue_small, 
+    character_sound = true, 
+    print_speed = 0.04, 
+    sound_every = 2, 
+    sound_number = 4
+    })
+example9box:send("Hello! Welcome to the world of Pocket Creatures![waitforinput][scroll][newline]My name is Professor Tree![newline][waitforinput][scroll][scroll]And you are?", 150, false)
+
 
 ```
 # Default Textbox Settings 
@@ -82,6 +157,7 @@ local default_settings = {
     color = {1,1,1,1}, -- Default text color.
     shadow_color = {1,1,1,1}, -- Default Drop Shadow Color.
     print_speed = 0.2, -- How fast text prints.
+    adjust_line_height = 0, -- Adjust the default line spacing.
     default_strikethrough_position = 0, -- Adjust the position of the strikethough line.
     default_underline_position = 0, -- Adjust the position of the underline line.
     character_sound = false, -- Use a voice when printing characters? True or false.
@@ -92,6 +168,38 @@ local default_settings = {
 -- You can set some defaults for each textbox object to make things easier.
 textbox = Text.new("left", default_settings)
 ```
+# Textbox Information 
+## Width, Height, Lines
+You can get the width, height and the number of lines after sending text to a textbox.
+```lua 
+my_cool_textbox = Text.new()
+
+my_cool_textbox:send("Oh, gee, I hope this print out one by one!")
+local textbox_x = 0
+local textbox_y = 0
+local textbox_w = my_cool_textbox.get.width
+local textbox_h = my_cool_textbox.get.height
+local textbox_l = my_cool_textbox.get.lines
+-- in love.draw()
+love.graphics.rectangle("fill", textbox_x, textbox_y, textbox_w, textbox_h)
+my_cool_textbox:draw(textbox_x, textbox_y)
+```
+# is_finished()
+Returns ```true``` if the textbox is done printing, or ```false``` if the textbox is still printing. 
+
+It will also return as ```true``` if ```[waitforinput]``` is in the text string.
+```lua 
+are_you_done = my_cool_textbox:is_finished()
+```
+
+# continue()
+Continue will continue printing after ```[waitforinput]``` pauses it.
+
+```lua 
+-- You only need to send this once.
+my_cool_textbox:continue()
+```
+
 # Tag Notes 
 Some tags will not work until you let the library know something about your game.
 
@@ -355,5 +463,9 @@ Note, all numbers are optional. You can use the ```[tag]``` without them, it wil
 ### rainbow 
 ```lua 
 "[rainbow=number(speed)=number(brightness of color)]rainbow[/rainbow]"
+```
+### scroll
+```lua 
+"[scroll] or [scroll=-int]" -- Scrolls the text in the textbox.
 ```
 

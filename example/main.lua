@@ -137,7 +137,7 @@ Text.configure.add_text_sound(Audio.text.neue, 0.2)
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
 example = {
 display_mode = 1,
-maxmodes = 8,
+maxmodes = 9,
 long_text_block = require('longtext'),
 ex5_textboxsize = 64,
 bop = true,
@@ -153,17 +153,17 @@ function love.load()
 example1box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, default_underline_position = -2, default_strikethrough_position = 1})
 example1box:send(example.long_text_block, 320*4, true)
 -- Example 2 // Golden Apple Font // Earthbound Style Box
-example2box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = true})
+example2box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = true, adjust_line_height = -3})
 example2box:send("• Do you like eggs?[newline]• I think they are [pad=6]eggzelent![audio=sfx=laugh]", 100, false)
 -- Example 3 // Golden Apple Font // Mother 3 Style Bottom 
-example3box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = false, print_speed = 0.02})
+example3box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = false, print_speed = 0.02, adjust_line_height = -3})
 example3box:send("I am a very cute [color=#00ff00]green frog[/color]. Would you like to eat dinner with me? It's [rainbow][bounce]fresh[/bounce] [u]fly[/u] [shake]soup[/shake]![/rainbow]", 316, false)
 --Example 4 // Earth Illusion // Bubble Style Box
-example4box = Text.new("left", { color = {0,0,0,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.earth_illusion})
+example4box = Text.new("left", { color = {0,0,0,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.earth_illusion, adjust_line_height = -2})
 example4box:send("[dropshadow=2][b]Old Man:[/b][newline]Hello young man. How are you?", 74, true)
 --Example 5 // Earth Illusion // Final Fantasy Style
-example5box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.earth_illusion, character_sound = true, sound_every = 5, sound_number = 2})
-example5box:send("[dropshadow=3][function=example.ex5_textboxsize=64][textspeed=0.02]With the Power of Queens, they challenged the Snakes. Garry's mighty waves peeled apart their diamond scales. The Wizards woke[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]mighty windstorms. Niza brought the deadly wine[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]and cheese. [audio=sfx=ui]", 320-16, false)
+example5box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.earth_illusion, character_sound = true, sound_every = 5, sound_number = 2, adjust_line_height = -2})
+example5box:send("[dropshadow=3][function=example.ex5_textboxsize=64][textspeed=0.02]With the Power of Queens, they challenged the Snakes. Garry's mighty waves peeled apart their diamond scales. The Wízärds woke[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]mighty windstorms. Niza brought the deadly wine[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]and cheese. [audio=sfx=ui]", 320-16, false)
 --Example 6 // Comic Neue / Center Box
 example6box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue, character_sound = true, sound_every = 5, sound_number = 2})
 example6box:send("Oh wow, you found the [bounce][rainbow]high-res[/rainbow][/bounce] text! [icon=1][icon=2][icon=3][icon=4] [icon=5][icon=6][icon=7][icon=8] [icon=9][icon=10][icon=11][icon=12][/]", 320*4-16, true)
@@ -173,6 +173,9 @@ example7box:send("[warble=-5][textspeed=0.02][image=witch][pad=32]There's someth
 --Example 8 // Comic Neue / Undertale Style
 example8box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_small, character_sound = true, print_speed = 0.04, sound_every = 2, sound_number = 4})
 example8box:send("[function=example.bop=true]Did you hear about the [color=#FF0000]bad puns?[/color][pause=0.5] You did?![pause=0.5] That's [color=#FFFF00]great[/color][pause=0.8]!  [shake]Now I don't have to tell you about them![/shake][pause=1][function=example.bop=false][audio=sfx=laugh]", 320-80, false)
+--Example 9 // Comic Neue / Pocket Monsters Scroll Style
+example9box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_small, character_sound = true, print_speed = 0.04, sound_every = 2, sound_number = 4})
+example9box:send("Hello! Welcome to the world of Pocket Creatures![waitforinput][scroll][newline]My name is Professor Tree![newline][waitforinput][scroll][scroll]And you are?", 150, false)
 end 
 
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
@@ -219,7 +222,7 @@ end
 
 if example.display_mode == 5 then 
 Screen.start()
-example_text = "Final Fantasy Style Textbox -  R to Reset View - C to continue when prompted"
+example_text = "Final Enixy Style Textbox -  R to Reset View - C to continue when prompted"
 love.graphics.draw(images.bg)
 Frame.draw("ff", 0, 0, 320, example.ex5_textboxsize)
 example5box:draw(8, 0)
@@ -269,6 +272,28 @@ example8box:draw(14 + 40, 15 )
 Screen.stop()
 end
 
+if example.display_mode == 9 then 
+Screen.start()
+example_text = "Catching Monsters Style Textbox / C to continue text"
+love.graphics.draw(images.bg)
+
+Frame.draw("utp", 320/2 - 150/2 - 4, 180 - 40, example9box.get.width + 8, 2 * 17)
+local bop = 1
+love.graphics.setScissor( 320/2 - 150/2, 180 - 40 + 4, example9box.get.width, 2 * 17 )
+example9box:draw(320/2 - 150/2, 180 - 40 + 4)
+love.graphics.setScissor()
+
+if example9box:is_finished() and math.floor(love.timer.getTime()*10) % 2 == 0 then
+	love.graphics.setColor(1,0,0,1)
+	love.graphics.print("-", 320/2 - 150/2 + example9box.get.width - 8, 180 - 20  )
+	love.graphics.print("-", 320/2 - 150/2 + example9box.get.width - 8, 180 - 19  )
+	love.graphics.print("-", 320/2 - 150/2 + example9box.get.width - 8, 180 - 18  )
+	love.graphics.setColor(1,1,1,1)
+end
+
+Screen.stop()
+end
+
 -- Draw Information Bar At the Bottom 
 love.graphics.setColor(0.95,0.95,0.95,1)
 love.graphics.rectangle("fill", 0, 180*4 - 25, 320*4, 40)
@@ -309,6 +334,9 @@ function love.update(dt)
 		example8box:update(dt)
 		example.boptimer = example.boptimer + dt * 10
 	end
+	if example.display_mode == 9 then 
+		example9box:update(dt)
+	end
 end
 
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
@@ -326,6 +354,15 @@ function love.keypressed( key, scancode, isrepeat )
 		if key == "r" then 
 		example2box:send("[|•] Do you like eggs?[newline][|•] I think they are [pad=6]eggzelent!", 100, false)
 		end		
+
+	end
+	if example.display_mode == 9 then 
+		if key == "r" then 
+			example9box:send("Hello! Welcome to the world of Pocket Creatures![waitforinput][scroll][newline]My name is Professor Tree![newline][waitforinput][scroll][scroll]And you are?", 150, false)
+		end		
+		if key == "c" then 
+			example9box:continue()
+		end
 	end
 	if example.display_mode == 3 then 
 		if key == "r" then 

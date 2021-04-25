@@ -28,7 +28,4 @@ This will even work for other languages!
 [font=shinonome_12]こんにちは！[/font][font=shinonome_14]こんにちは！[/font][font=shinonome_16]こんにちは！[/font]
 
 You can even draw an image directly in the text!
-[image=frame=default_8][image=frame=eb_8][image=frame=m3_8]
-
-
-]]
+[image=frame=default_8][image=frame=eb_8][image=frame=m3_8] ]]

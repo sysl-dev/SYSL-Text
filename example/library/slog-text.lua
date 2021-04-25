@@ -256,7 +256,9 @@ end
 ----------------------------------------------------------------------------------------------------]]--
 function M:send(text, wrap_num, show_all)
 
-    -- UTF8 Engine, Text comes in and any characters with >1 byte and wrapped so we're aware of them when drawing.
+    ------------------------------------------------------------------------------
+    -- UTF8 -> WRAP so the library understands.
+    ------------------------------------------------------------------------------
     local words = {}
     for _, c in utf8.codes(text) do
       if #utf8.char(c) > 1 then
@@ -267,7 +269,7 @@ function M:send(text, wrap_num, show_all)
     end
     -- Updated Text String comes out, all nice and wrapped.
     text = table.concat(words)
-    -- /UTF8
+    -- /UTF8 -----------------------------------------------------------------------
 
     self.current_character = #self.table_string
     self.current_print_speed = self.default_print_speed
@@ -316,13 +318,14 @@ function M:send(text, wrap_num, show_all)
     -- to do.
     -- If you want to hack it,
     ------------------------------------------------------------------------------
+    local line_start = {1,}
     if wrap_num then
-        if type(wrap_num) ~= "number" then wrap_num = 200 end
+        if type(wrap_num) ~= "number" then error("Wrap requires a number") end
         local last_space = 0
         local pixel_count = 0
         local pixel_count_last_space = 0
         local line_length = {}
-        local line_start = {1,}
+        line_start = {1,} -- Exposing for line counting.
         local space_locations = {}
         local spaces_per_line = {}
         local space_count = 0
@@ -444,7 +447,7 @@ function M:send(text, wrap_num, show_all)
     -- Also removes any banned commands from instant display.
     ------------------------------------------------------------------------------
     if show_all then
-        local banned_commands = {"backspace", "pause", "skip", "audio", "waitforinput" } -- HACK: Some commands are not allowed when showing all the text at once.
+        local banned_commands = {"backspace", "pause", "skip", "audio", "waitforinput", "scroll" } -- HACK: Some commands are not allowed when showing all the text at once.
         for i = 1, #self.table_string do
             for x=1, #banned_commands do
                 if self.table_string[i]:match(banned_commands[x]) then
@@ -458,6 +461,7 @@ function M:send(text, wrap_num, show_all)
     ------------------------------------------------------------------------------
     -- Hack using special_character[5] (default |) to draw Unicode.
     ------------------------------------------------------------------------------
+
     for i = 1, #self.table_string do
         if self.table_string[i]:match("%" .. special_character[1] .. special_character[5] .. "sp1" .. "%"  .. special_character[2]) then
                 self.table_string[i] = special_character[1]
@@ -470,6 +474,66 @@ function M:send(text, wrap_num, show_all)
         end
     end
 
+    ------------------------------------------------------------------------------
+    -- Calculates width and height, no matter what display mode the text is set to.
+    -- Note, some special commands will throw this off, such as cursor drawing
+    -- changes and text animation.
+    ------------------------------------------------------------------------------
+    if wrap_num then
+        if type(wrap_num) ~= "number" then error("Wrap requires a number") end
+        -- Width / Set by autowrap 
+        self.get.width = wrap_num
+        -- Lines / Grab from calc above. 
+        self.get.lines = #line_start
+        -- Height / Grab from calc above.
+        self.get.height = self.get.lines * get_character_height(" ") + self.adjust_line_height
+    else
+        --------------------------------------------------------------------------
+        -- Calculation is less robust when an autowrap width is not sent.
+        --------------------------------------------------------------------------
+        local lines = 1
+        local newline_pos = {1,}
+        --------------------------------------------------------------------------
+        -- Height
+        --------------------------------------------------------------------------
+        for i = 1, #self.table_string do
+            if self.table_string[i] == special_character[1] .. "newline" .. special_character[2] then
+                lines = lines + 1
+                newline_pos[#newline_pos+1] = i
+            end
+        end
+        newline_pos[#newline_pos+1] = #self.table_string 
+
+        self.get.height = lines * get_character_height(" ") + self.adjust_line_height
+
+        --------------------------------------------------------------------------
+        -- Lines
+        --------------------------------------------------------------------------
+        self.get.lines = lines
+        --------------------------------------------------------------------------
+        -- Width
+        --------------------------------------------------------------------------
+        local line_table = {}
+        local commandless_string = ""
+        -- Cut out each line, strip commands
+        for i=1, #newline_pos -1 do 
+            commandless_string = ""
+            for j=newline_pos[i], newline_pos[i+1] do 
+                if self.table_string[j]:sub(1,1) ~= special_character[1] then 
+                    commandless_string = commandless_string .. self.table_string[j]
+                end
+            end
+            line_table[i] = commandless_string
+        end
+        -- Find the longest line
+        local twidth = 0
+        for i=1, #line_table do 
+            if twidth < get_character_width(line_table[i]) then 
+                twidth = get_character_width(line_table[i])
+            end
+        end
+        self.get.width = twidth
+    end
 
 end
 
@@ -481,8 +545,8 @@ function M:setDefaults()
     self.current_color = self.default_color
     love.graphics.setFont(self.default_font)
     self.current_print_speed = self.default_print_speed
-    self.adjust_line_height = 0
     self.adjust_line_height = self.default_adjust_line_height
+    self.scroll = 0
     -- Commands
     for k, v in pairs(self.effect_flags) do
         self.effect_flags[k] = false
@@ -493,8 +557,9 @@ end
        DRAW - Draw the text.
 ----------------------------------------------------------------------------------------------------]]--
 function M:draw(tx, ty)
+    --love.graphics.rectangle("fill", tx, ty, self.get.width, self.get.height)
     self.tx = tx
-    self.ty = ty
+    self.ty = ty + self.scroll
     if #self.table_string == 0 then return end -- Don't bother trying to do anything if the string is empty.
     ------------------------------------------------------------------------------
     -- Reset any cursor positions
@@ -505,16 +570,16 @@ function M:draw(tx, ty)
     -- Define the default drawing values, and set the defaults before
     -- entering the draw loop.
     ------------------------------------------------------------------------------
-    local str = {x = tx + get_character_height("W")/2, y = ty + get_character_height("W")/2, rot = 0, sx = 1, sy = 1, ox = get_character_height("W")/2, oy = get_character_height("W")/2, padding = 0}
+    local str = {x = self.tx + get_character_height("W")/2, y = self.ty + get_character_height("W")/2, rot = 0, sx = 1, sy = 1, ox = get_character_height("W")/2, oy = get_character_height("W")/2, padding = 0}
     self:setDefaults()
     ------------------------------------------------------------------------------
     -- Step though each character in the table and do the following:
     ------------------------------------------------------------------------------
     for i=1, self.current_character do
-        str = self:changeDraw(str, tx, ty, i)   -- Apply any changes to the drawing depending on the draw flags.
+        str = self:changeDraw(str, self.tx, self.ty, i)   -- Apply any changes to the drawing depending on the draw flags.
         if self.table_string[i] then    -- If a valid character then:
             if not self.table_string[i]:match("%" .. special_character[1] .. ".") then -- If it's equal to only 1 or 2 character[s] then:
-                self:addDraw(str, tx, ty, i) -- Draw any extra draw commands depending on draw flags
+                self:addDraw(str, self.tx, self.ty, i) -- Draw any extra draw commands depending on draw flags
                 love.graphics.setColor(self.current_color)  -- Set the color to the current color
                 love.graphics.print(self.table_string[i], str.x + self.cursor.x, str.y + self.cursor.y, str.rot, str.sx, str.sy, str.ox, str.oy) -- Print Text
                 self.cursor.x = self.cursor.x + get_character_width(self.table_string[i]) -- Move cursor the length of the character.
@@ -639,6 +704,14 @@ M.command_table = {
     function(self)
         one_time_command(self,self.command_modifer[1])
         self.waitforinput = true
+    end,
+
+    --[[ Runs at end of string ]]------------------------------------------------
+    ["scroll"] =
+    function(self) one_time_command(self,self.command_modifer[1])
+        local _mod1 = tonumber(self.command_modifer[2])
+        if type(_mod1) ~= "number" then _mod1 = (get_character_height("W") + self.adjust_line_height)*-1 end
+        self.scroll = self.scroll + _mod1
     end,
 
     -----------------------------------------------------------------------------
@@ -896,38 +969,38 @@ M.command_table = {
 
     --[[ Fake Underline ]]--------------------------------------
     ["u"] =
-    function(self) 
+    function(self)
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then
             self.current_underline_position = self.default_underline_position
-        else 
+        else
             self.current_underline_position = _mod1
-        end   
+        end
         self.effect_flags.underline = true
      end,
 
     --[[ Turn off Fake Underline ]]------------------------------------------------
     ["/u"] = -- Turns off italics.
-    function(self) 
+    function(self)
         self.effect_flags.underline = false
         self.current_underline_position = self.default_underline_position
      end,
 
     --[[ Fake Strikethrough ]]--------------------------------------
     ["s"] =
-    function(self) 
+    function(self)
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then
             self.current_strikethrough_position = self.default_strikethrough_position
-        else 
+        else
             self.current_strikethrough_position = _mod1
-        end   
+        end
         self.effect_flags.strikethrough = true
      end,
 
     --[[ Turn off Fake Strikethrough ]]------------------------------------------------
     ["/s"] = -- Turns off italics.
-    function(self) 
+    function(self)
         self.effect_flags.strikethrough = false
         self.current_strikethrough_position = self.default_strikethrough_position
      end,
@@ -953,139 +1026,139 @@ M.command_table = {
     -----------------------------------------------------------------------------
     --[[ Shaking Text, delayed circle pattern ]]---------------------------------
     ["shake"] =
-    function(self) 
+    function(self)
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then
-            self.effect_speed.shake_speed = self.effect_speed.shake_speed_default 
-        else 
+            self.effect_speed.shake_speed = self.effect_speed.shake_speed_default
+        else
             self.effect_speed.shake_speed = _mod1
-        end   
-        self.effect_flags.shake = true 
+        end
+        self.effect_flags.shake = true
     end,
 
     --[[ Shaking Text, Off ]]----------------------------------------------------
     ["/shake"] =
-    function(self) 
-        self.effect_flags.shake = false 
+    function(self)
+        self.effect_flags.shake = false
         self.effect_speed.shake_speed = self.effect_speed.shake_speed_default
     end,
 
     --[[ Text spins from it's center ]]------------------------------------------
     ["spin"] =
-    function(self) 
+    function(self)
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then
-            self.effect_speed.spin_speed = self.effect_speed.spin_speed_default 
-        else 
+            self.effect_speed.spin_speed = self.effect_speed.spin_speed_default
+        else
             self.effect_speed.spin_speed = _mod1
-        end       
-        self.effect_flags.spin = true 
+        end
+        self.effect_flags.spin = true
     end,
 
     --[[ Spinning Text, Off ]]----------------------------------------------------
     ["/spin"] =
-    function(self) 
-        self.effect_flags.spin = false 
+    function(self)
+        self.effect_flags.spin = false
         self.effect_speed.spin_speed = self.effect_speed.spin_speed_default
     end,
 
     --[[ Text swings from it's center ]]-----------------------------------------
     ["swing"] =
-    function(self) 
+    function(self)
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then
-            self.effect_speed.swing_speed = self.effect_speed.swing_speed_default 
-        else 
+            self.effect_speed.swing_speed = self.effect_speed.swing_speed_default
+        else
             self.effect_speed.swing_speed = _mod1
-        end   
-        self.effect_flags.swing = true 
+        end
+        self.effect_flags.swing = true
     end,
 
     --[[ swinging Text, Off ]]---------------------------------------------------
     ["/swing"] =
-    function(self) 
+    function(self)
         self.effect_flags.swing = false
         self.effect_speed.swing_speed = self.effect_speed.swing_speed_default
     end,
 
     --[[ Text falls like rain ]]-------------------------------------------------
     ["raindrop"] =
-    function(self) 
+    function(self)
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then
-            self.effect_speed.raindrop_speed = self.effect_speed.raindrop_speed_default 
-        else 
+            self.effect_speed.raindrop_speed = self.effect_speed.raindrop_speed_default
+        else
             self.effect_speed.raindrop_speed = _mod1
-        end   
-        self.effect_flags.raindrop = true 
+        end
+        self.effect_flags.raindrop = true
     end,
 
     --[[ Raining Text, Off ]]----------------------------------------------------
     ["/raindrop"] =
-    function(self) 
-        self.effect_flags.raindrop = false 
+    function(self)
+        self.effect_flags.raindrop = false
         self.effect_speed.raindrop_speed = self.effect_speed.raindrop_speed_default
     end,
 
     --[[ Text bounce up and down ]]----------------------------------------------
     ["bounce"] =
-    function(self) 
+    function(self)
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then
-            self.effect_speed.bounce_speed = self.effect_speed.bounce_speed_default 
-        else 
+            self.effect_speed.bounce_speed = self.effect_speed.bounce_speed_default
+        else
             self.effect_speed.bounce_speed = _mod1
         end
-        self.effect_flags.bounce = true 
+        self.effect_flags.bounce = true
     end,
 
     --[[ Bouncing Text, Off ]]---------------------------------------------------
     ["/bounce"] =
-    function(self) 
-        self.effect_flags.bounce = false 
+    function(self)
+        self.effect_flags.bounce = false
         self.effect_speed.bounce_speed = self.effect_speed.bounce_speed_default
     end,
 
     --[[ Text blink ]]-----------------------------------------------------------
     ["blink"] =
-    function(self) 
+    function(self)
         local _mod1 = tonumber(self.command_modifer[2])
         if type(_mod1) ~= "number" then
-            self.effect_speed.blink_speed = self.effect_speed.blink_speed_default 
-        else 
+            self.effect_speed.blink_speed = self.effect_speed.blink_speed_default
+        else
             self.effect_speed.blink_speed = _mod1
         end
-        self.effect_flags.blink = true 
+        self.effect_flags.blink = true
     end,
 
     --[[ Blinking Text, Off ]]---------------------------------------------------
     ["/blink"] =
-    function(self) 
-        self.effect_flags.blink = false 
+    function(self)
+        self.effect_flags.blink = false
         self.effect_speed.blink_speed = self.effect_speed.blink_speed_default
     end,
 
     --[[ RAINBOW COLORS ]]--------------------------------------------------------
     ["rainbow"] =
-    function(self) 
+    function(self)
         local _mod1 = tonumber(self.command_modifer[2])
         local _mod2 = tonumber(self.command_modifer[3])
         if type(_mod1) ~= "number" then
-            self.effect_speed.rainbow_speed = self.effect_speed.rainbow_speed_default 
-        else 
+            self.effect_speed.rainbow_speed = self.effect_speed.rainbow_speed_default
+        else
             self.effect_speed.rainbow_speed = _mod1
         end
         if type(_mod2) ~= "number" then
             self.effect_speed.rainbow_color_adj = self.effect_speed.rainbow_color_adj_default
-        else 
+        else
             self.effect_speed.rainbow_color_adj = _mod2
         end
-        self.effect_flags.rainbow = true 
+        self.effect_flags.rainbow = true
     end,
 
     --[[ Rainbow Text, Off ]]-----------------------------------------------------
     ["/rainbow"] =
-    function(self) 
+    function(self)
         self.effect_flags.rainbow = false
         self.current_color = self.default_color
         self.effect_speed.rainbow_speed = self.effect_speed.rainbow_speed_default
@@ -1346,7 +1419,7 @@ function M:addDraw(str, tx, ty, i)
     if self.effect_flags.rainbow then
         local phase = self.timer_animation * self.effect_speed.rainbow_speed
         local center = 128
-        local width = 80 + self.effect_speed.rainbow_color_adj -- max 127 
+        local width = 80 + self.effect_speed.rainbow_color_adj -- max 127
         local frequency = -math.pi*80/#self.table_string
         local red = math.sin(frequency*i+2+phase) * width + center;
         local green = math.sin(frequency*i+0+phase) * width + center;
@@ -1383,10 +1456,12 @@ function m.new(rendering, table_settings) -- Todo, configuration at runtime.
     setmetatable(self, { __index = M })
     -- Storage
     self.table_string = {}
+    self.get = {width = 0, height = 0, lines = 0}
     self.command_modifer = ""
     self.current_character = 0
     self.tx = 0
     self.ty = 0
+    self.scroll = 0
     -- Timers/Counters
     self.timer_print = 1
     self.timer_animation = 0
@@ -1403,7 +1478,7 @@ function m.new(rendering, table_settings) -- Todo, configuration at runtime.
     self.default_print_speed = table_settings.print_speed or 0.05
     self.current_print_speed = self.default_print_speed
     self.rendering = rendering
-    self.default_adjust_line_height = 0
+    self.default_adjust_line_height = table_settings.adjust_line_height or 0
     self.adjust_line_height = self.default_adjust_line_height
     self.default_strikethrough_position = table_settings.default_strikethrough_position or 0
     self.current_strikethrough_position = self.default_strikethrough_position

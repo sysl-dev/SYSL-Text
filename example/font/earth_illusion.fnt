@@ -1,5 +1,5 @@
 info face="Earth Illusion" size=22 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=0 aa=1 padding=2,2,2,2 spacing=2,1 outline=0
-common lineHeight=17 base=18 scaleW=512 scaleH=512 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+common lineHeight=19 base=18 scaleW=512 scaleH=512 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
 page id=0 file="earth_illusion_0.png"
 chars count=214
 char id=-1   x=91    y=0     width=15    height=26    xoffset=-2    yoffset=-2    xadvance=11    page=0  chnl=15
