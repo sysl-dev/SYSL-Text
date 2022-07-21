@@ -136,7 +136,7 @@ Text.configure.add_text_sound(Audio.text.neue, 0.2)
 -- There are nicer ways to do this, but it works as an example.
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
 example = {
-display_mode = 1,
+display_mode = 9,
 maxmodes = 9,
 long_text_block = require('longtext'),
 ex5_textboxsize = 64,

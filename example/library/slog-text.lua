@@ -286,6 +286,7 @@ function M:send(text, wrap_num, show_all)
     self.table_string = {}
     self.timer_pause = 0
     self.timer_print = 0
+    self.scroll = 0
     self.command_modifer = ""
     self.current_character = 0
     self.sound_every_counter = 1
@@ -546,7 +547,6 @@ function M:setDefaults()
     love.graphics.setFont(self.default_font)
     self.current_print_speed = self.default_print_speed
     self.adjust_line_height = self.default_adjust_line_height
-    self.scroll = 0
     -- Commands
     for k, v in pairs(self.effect_flags) do
         self.effect_flags[k] = false
