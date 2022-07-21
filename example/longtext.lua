@@ -6,13 +6,13 @@ This library will work with any font object that love can produce, and at any sc
 
 Note, in order to apply all the effects and animate everything each character is a draw call. So if you have a lot of text, like a visual novel, it might be overkill.
 
-[b]b[/b] - [b]Fake Bold[/b]     [b]u[/b] - [u]Underline[/u]    [shadowcolor=#FF0000] [b]dropshadow=[/b]# - Style[font=earth_illusion] [dropshadow=0]00 [dropshadow=1]01 [dropshadow=2]02 [dropshadow=3]03 [dropshadow=4]04 [dropshadow=5]05 [dropshadow=6]06 [dropshadow=7]07 [dropshadow=8]08 [dropshadow=9]09 [dropshadow=10]10[/dropshadow][/font]
+[b]b[/b] - [b]Fake Bold[/b]     [b]u[/b] - [u]Underline[/u]    [shadowcolor=#FF0000] [b]dropshadow=[/b]# - Style[font=earth_illusion] [dropshadow=0]00 [dropshadow=1]01 [dropshadow=2]02 [dropshadow=3]03 [dropshadow=4]04 [dropshadow=5]05 [shadowcolor=#00FFAA][dropshadow=6]06 [dropshadow=7]07 [dropshadow=8]08 [dropshadow=9]09 [dropshadow=10]10[/dropshadow][/font]
 [b]i[/b] - [i]Fake Italics[/i]     [b]s[/b] - [s]Strikethrough[/s]     [b]mirror[/b] - [mirror]Print text backwards[/mirror]    (Print Text Backwards)     [b]rotate[/b]=# - [rotate=180]Rotate Text[/rotate]    (Rotate Text)
 [b]color[/b]=# - [color=20]Sets color, based on a palette table.[/color] [color=#AA2032]Or Hex #AA2032[/color]        [b]font=font_name[/b] - [font=comic_neue]Change font ([b]B[/b] [i]I[/i] [u=-3]U[/u] [s=1]S[/s])
 
 [/font][b]scale[/b]=# -   [scale=2]Scale the text[/scale]   
 
-[b]shake[/b] - [shake]Shake Text[/shake]     [b]bounce[/b] - [bounce]Bounce Text[/bounce]
+[b=30]shake[/b] - [shake]Shake Text[/shake]     [b]bounce[/b] - [bounce]Bounce Text[/bounce]
 [b]spin[/b] - [spin]Spin Text[/spin]     [b]blink[/b] - [blink]Blink Text[/blink]
 [b]swing[/b] - [swing]Swing Text[/swing]     [b]rainbow[/b] - [rainbow]Raibow Text[/rainbow]
 [b]raindrop[/b] - [raindrop]Rain Fall Text[/raindrop]                                         [b]shader[/b] - [shader=x_gradient]Apply a shader for advanced text control - have fun![/shader]

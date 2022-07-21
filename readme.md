@@ -43,7 +43,7 @@ my_cool_textbox:update(dt)
 SYSL-Text supports tags in ```[these brackets]``` and will use them to apply effects to your rendered text. SYSL-Text also supports defining default styles per textbox. Please take a look at the examples below. **Please note that effects and style are only examples, the library does not provide backgrounds or textboxes.**
 
 ## Tags with Screenshot Examples
-![Example 1](/screenshots/1.gif?raw=true "Example of Library")
+![Example 1](/screenshots/01.gif?raw=true "Example of Library")
 ```lua
 example2box = Text.new("left", 
 { 
@@ -55,7 +55,7 @@ example2box = Text.new("left",
 })
 example2box:send("• Do you like eggs?[newline]• I think they are [pad=6]eggzelent![audio=sfx=laugh]", 100, false)
 ```
-![Example 2](/screenshots/2.gif?raw=true "Example of Library")
+![Example 2](/screenshots/02.gif?raw=true "Example of Library")
 ```lua
 example3box = Text.new("left", 
 { 
