@@ -179,7 +179,7 @@ example8box:send("[function=example.bop=true]Did you hear about the [color=#FF00
 example9box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_small, character_sound = true, print_speed = 0.04, sound_every = 2, sound_number = 4})
 example9box:send("Hello! Welcome to the world of Pocket Creatures![waitforinput][scroll][newline]My name is Professor Tree![newline][waitforinput][scroll][scroll]And you are?", 150, false)
 example10box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.monogram_extended_custom, character_sound = false, keep_space_on_line_break=true, modify_character_width_table = {["j"] = -1, }})
-example10box:send("Special Sheep Polution Test, Bahhh:\n\nij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij\n\na a a a a a a a a a a a a a a a a a a a a a a a a\n\nI've dropped so many letters oh no!", 540, true)
+example10box:send("Special Sheep Polution Test, Bahhh:\n\nij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij\n\na a a a a a a a a a a a a a a a a a a a a a a a a\n\nI've dropped so many letters oh no!\nOjan Pjan Ajan Testj Characterj oj mh wj ikj applej orangej colaj Martijn..", 540, true)
 end 
 
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
@@ -305,7 +305,7 @@ if example.display_mode == 10 then
   love.graphics.draw(images.bg)
   Screen.stop()
   love.graphics.setColor(0,0,0,1)
-  love.graphics.rectangle("fill",0,0,540, 300)
+  love.graphics.rectangle("fill",0,0,540, 540)
   love.graphics.setColor(1,1,1,1)
   example10box:draw(0,0)
   end

@@ -1,7 +1,7 @@
 local m = {
   debug = false,
   _NAME = 'SYSL-Text',
-  _VERSION = '1.9',
+  _VERSION = '2.0',
   _DESCRIPTION = 'Fancy Text System',
   _URL = 'https://github.com/SystemLogoff',
   _LICENSE = [[

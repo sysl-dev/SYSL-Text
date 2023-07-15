@@ -4,6 +4,8 @@
 ![Quick Demo of Examples](/screenshots/ex.gif?raw=true "Quick Demo of Examples")
 
 # Update Notes
+* New: You can now pass a table to modify character widths, in case your font does something like move the j or q in one pixel. (See example 10)
+* New: You can now pass tables to the Audio/Font/Image/Etc commands if you don't keep resources global
 * New ```[scroll]``` command, will scroll the text up by line-height or a set value. Works well with ```love.graphics.setScissor```.
 * You have access to the basic calculated width, height and linecount for each textbox. Access is under the ```get``` table.
     - ```my_cool_textbox.get.width, my_cool_textbox.get.height, my_cool_textbox.get.lines ```
