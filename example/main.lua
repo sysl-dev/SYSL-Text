@@ -39,10 +39,12 @@ comic_neue_big = love.graphics.newFont("font/comic_neue_bold_19.ttf",32),
 shinonome_12 = love.graphics.newFont("font/shinonome_12.ttf", 12),
 shinonome_14 = love.graphics.newFont("font/shinonome_14.ttf", 14),
 shinonome_16 = love.graphics.newFont("font/shinonome_16.ttf", 16),
+monogram_extended_custom = love.graphics.newFont("font/monogram_extended_custom.ttf", 32),
 } 
 -- Set the default font
 love.graphics.setFont(Fonts.default)
 
+print("Kernign Test, custom, ij", Fonts.monogram_extended_custom:getKerning("i", "j"))
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
 -- Config - font_table
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
@@ -136,8 +138,8 @@ Text.configure.add_text_sound(Audio.text.neue, 0.2)
 -- There are nicer ways to do this, but it works as an example.
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
 example = {
-display_mode = 9,
-maxmodes = 9,
+display_mode = 10,
+maxmodes = 10,
 long_text_block = require('longtext'),
 ex5_textboxsize = 64,
 bop = true,
@@ -150,25 +152,25 @@ boptimer = 1,
 function love.load() 
 -- Set up examples
 -- Example 1 // Default Font // Examples 
-example1box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, default_underline_position = -2, default_strikethrough_position = 1})
+example1box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, keep_space_on_line_break=true, default_underline_position = -2, default_strikethrough_position = 1})
 example1box:send(example.long_text_block, 320*4, true)
 -- Example 2 // Golden Apple Font // Earthbound Style Box
-example2box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = true, adjust_line_height = -3})
+example2box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, keep_space_on_line_break=true, character_sound = true, adjust_line_height = -3})
 example2box:send("• Do you like eggs?[newline]• I think they are [pad=6]eggzelent![audio=sfx=laugh]", 100, false)
 -- Example 3 // Golden Apple Font // Mother 3 Style Bottom 
-example3box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, character_sound = false, print_speed = 0.02, adjust_line_height = -3})
+example3box = Text.new("left", { color = {1,1,1,1}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.golden_apple, keep_space_on_line_break=true, character_sound = false, print_speed = 0.02, adjust_line_height = -3})
 example3box:send("I am a very cute [color=#00ff00]green frog[/color]. Would you like to eat dinner with me? It's [rainbow][bounce]fresh[/bounce] [u]fly[/u] [shake]soup[/shake]![/rainbow]", 316, false)
 --Example 4 // Earth Illusion // Bubble Style Box
-example4box = Text.new("left", { color = {0,0,0,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.earth_illusion, adjust_line_height = -2})
+example4box = Text.new("left", { color = {0,0,0,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.earth_illusion, keep_space_on_line_break=true, adjust_line_height = -2})
 example4box:send("[dropshadow=2][b]Old Man:[/b][newline]Hello young man. How are you?", 74, true)
 --Example 5 // Earth Illusion // Final Fantasy Style
-example5box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.earth_illusion, character_sound = true, sound_every = 5, sound_number = 2, adjust_line_height = -2})
+example5box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.earth_illusion, keep_space_on_line_break=true, character_sound = true, sound_every = 5, sound_number = 2, adjust_line_height = -2})
 example5box:send("[dropshadow=3][function=example.ex5_textboxsize=64][textspeed=0.02]With the Power of Queens, they challenged the Snakes. Garry's mighty waves peeled apart their diamond scales. The Wízärds woke[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]mighty windstorms. Niza brought the deadly wine[waitforinput][audio=sfx=ui] [function=example.ex5_textboxsize=example.ex5_textboxsize+16]and cheese. [audio=sfx=ui]", 320-16, false)
 --Example 6 // Comic Neue / Center Box
-example6box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue, character_sound = true, sound_every = 5, sound_number = 2})
+example6box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue, keep_space_on_line_break=true, character_sound = true, sound_every = 5, sound_number = 2})
 example6box:send("Oh wow, you found the [bounce][rainbow]high-res[/rainbow][/bounce] text! [icon=1][icon=2][icon=3][icon=4] [icon=5][icon=6][icon=7][icon=8] [icon=9][icon=10][icon=11][icon=12][/]", 320*4-16, true)
 --Example 7 // Comic Neue Big / BoxBK Style
-example7box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_big, character_sound = true, sound_every = 3, sound_number = 3})
+example7box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_big, keep_space_on_line_break=true, character_sound = true, sound_every = 3, sound_number = 3})
 example7box:send("[warble=-5][textspeed=0.02][image=witch][pad=32]There's something I have to say,[pause=0.7] [warble=5]this witch will save the day!", 320*4-16, false)
 --Example 8 // Comic Neue / Undertale Style
 example8box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_small, character_sound = true, print_speed = 0.04, sound_every = 2, sound_number = 4})
@@ -176,6 +178,8 @@ example8box:send("[function=example.bop=true]Did you hear about the [color=#FF00
 --Example 9 // Comic Neue / Pocket Monsters Scroll Style
 example9box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_small, character_sound = true, print_speed = 0.04, sound_every = 2, sound_number = 4})
 example9box:send("Hello! Welcome to the world of Pocket Creatures![waitforinput][scroll][newline]My name is Professor Tree![newline][waitforinput][scroll][scroll]And you are?", 150, false)
+example10box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.monogram_extended_custom, character_sound = false, keep_space_on_line_break=true, modify_character_width_table = {["j"] = -1, }})
+example10box:send("Special Sheep Polution Test, Bahhh:\n\nij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij\n\na a a a a a a a a a a a a a a a a a a a a a a a a\n\nI've dropped so many letters oh no!", 540, true)
 end 
 
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
@@ -293,6 +297,18 @@ end
 
 Screen.stop()
 end
+
+if example.display_mode == 10 then 
+  Screen.start()
+  example_text = "Center Style Textbox"
+  
+  love.graphics.draw(images.bg)
+  Screen.stop()
+  love.graphics.setColor(0,0,0,1)
+  love.graphics.rectangle("fill",0,0,540, 300)
+  love.graphics.setColor(1,1,1,1)
+  example10box:draw(0,0)
+  end
 
 -- Draw Information Bar At the Bottom 
 love.graphics.setColor(0.95,0.95,0.95,1)

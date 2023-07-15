@@ -203,6 +203,9 @@ my_cool_textbox:continue()
 # Tag Notes 
 Some tags will not work until you let the library know something about your game.
 
+# 1.9 Update - Tags
+You can now pass a table instead of a string, this will allow you to use a table of assets without using global assets.
+
 ## Audio
 ```lua
 --Text.configure.audio_table(table_string)
