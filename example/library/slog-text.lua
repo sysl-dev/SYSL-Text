@@ -271,8 +271,9 @@ function M:send(text, wrap_num, show_all)
   local command_word = false -- Special Character is always off at the start of any new string processing
   for i = 1, #text do -- For each character in the string, do the following
     local character = text:sub(i, i) -- Separate the character -- TODO UTF8Fix, for now use the insert commands [|ò]
+    local next_character = text:sub(i+1, i+1) -- Separate the character -- TODO UTF8Fix, for now use the insert commands [|ò]
     character = convert_special_character(character) -- Convert any special characters
-    if character == special_character[1] then -- If it's the first special character, confirm that
+    if character == special_character[1] and next_character ~= special_character[1]  then -- If it's the first special character, confirm that
       command_word = true -- all should be combined until the second special character
       self.table_string[#self.table_string + 1] = "" -- Create the next table entry as an empty string
     end
@@ -1191,6 +1192,7 @@ M.command_table = {
       self.cursor.x = self.cursor.x + undefined_image:getWidth()
     end
   end,
+
   -----------------------------------------------------------------------------
   --  Sound Commands
   -----------------------------------------------------------------------------
