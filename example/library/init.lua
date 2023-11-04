@@ -1,7 +1,7 @@
-local sysl 		= {}
-local path 		= ...
-sysl.frame		= require(folder .. ".slog-frame"	)
-sysl.icon		= require(folder .. ".slog-icon"		)
-sysl.pixel		= require(folder .. ".slog-pixel"	)
-sysl.text		= require(folder .. ".slog-text"		)
+local sysl		= {}
+local path		= ...
+sysl.frame		= require(path .. ".slog-frame"	)
+sysl.icon		= require(path .. ".slog-icon"	)
+sysl.pixel		= require(path .. ".slog-pixel"	)
+sysl.text		= require(path .. ".slog-text"	)
 return sysl
