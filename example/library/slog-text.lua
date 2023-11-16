@@ -606,7 +606,7 @@ end
 --[[----------------------------------------------------------------------------------------------------
        DRAW - Draw the text.
 ----------------------------------------------------------------------------------------------------]]
-function M:draw(tx, ty)
+function M:draw(tx, ty, sx, sy)
     -- love.graphics.rectangle("fill", tx, ty, self.get.width, self.get.height)
     self.tx = tx
     self.ty = ty + self.scroll
@@ -632,8 +632,8 @@ function M:draw(tx, ty)
         x = self.tx + get_character_height("W") / 2,
         y = self.ty + get_character_height("W") / 2,
         rot = 0,
-        sx = 1,
-        sy = 1,
+        sx = sx or 1,
+        sy = sy or 1,
         ox = get_character_height("W") / 2,
         oy = get_character_height("W") / 2,
         padding = 0,
@@ -1528,12 +1528,13 @@ function M:changeDraw(str, tx, ty, i)
         x = math.floor((tx + get_character_height("I") / 2) + 0.5),
         y = math.floor((ty + get_character_height("I") / 2) + 0.5),
         rot = 0,
-        sx = 1,
-        sy = 1,
+        sx = str.sx or 1,
+        sy = str.sy or 1,
         ox = math.floor((get_character_height("I") / 2) + 0.5),
         oy = math.floor((get_character_height("I") / 2) + 0.5),
         padding = 0,
     }
+
     if self.effect_flags.italics then
         strchg.rot = strchg.rot + math.rad(10)
     end
@@ -1575,10 +1576,11 @@ function M:changeDraw(str, tx, ty, i)
     end
 
     if self.effect_flags.scale and self.effect_flags.scale ~= 0 and type(self.effect_flags.scale) == "number" then
-        strchg.sx = self.effect_flags.scale
-        strchg.sy = self.effect_flags.scale
-        strchg.padding = (get_character_width(self.table_string[i]) * self.effect_flags.scale) - get_character_width(self.table_string[i])
+        strchg.sx = strchg.sx * self.effect_flags.scale
+        strchg.sy = strchg.sy * self.effect_flags.scale
     end
+
+    strchg.padding = (get_character_width(self.table_string[i]) * math.min(strchg.sx, strchg.sy)) - get_character_width(self.table_string[i])
 
     if self.effect_flags.rotate and type(self.effect_flags.rotate) == "number" then
         strchg.x = math.floor((tx + get_character_width(self.table_string[i]) / 2) + 0.5)
@@ -1586,13 +1588,17 @@ function M:changeDraw(str, tx, ty, i)
         strchg.ox = math.floor((get_character_width(self.table_string[i]) / 2) + 0.5)
         strchg.oy = math.floor((get_character_height(self.table_string[i]) / 2) + 0.5)
         strchg.rot = strchg.rot + math.rad(self.effect_flags.rotate)
-        strchg.padding = 2
+        strchg.padding = strchg.padding * 2
     end
 
     if self.effect_flags.fakebold then
-        strchg.padding = 1
+        strchg.padding = strchg.padding + 1
     end
 
+    -- there shouldn't be a need for a copy
+    -- the table doesn't have any table elements
+    -- and we just created it
+    -- anyways too scared to touch
     return table_shallow_copy(strchg)
 end
 
