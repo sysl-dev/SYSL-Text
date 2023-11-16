@@ -29,3 +29,4 @@ This will even work for other languages!
 
 You can even draw an image directly in the text!
 [image=frame=default_8][image=frame=eb_8][image=frame=m3_8] ]]
+
