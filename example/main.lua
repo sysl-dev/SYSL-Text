@@ -21,7 +21,7 @@ Icon = require("library.slog-icon");
 -- SLog Text Library
 Text = require("library.slog-text")
 
---[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
+--[[------------------------------------------------------------------- ----------------------------------------------------------------------------------------------------------]]--
 -- Config - Advanced Scripting
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
 -- Enable Advanced Scripting with the [function=lua code] command.
@@ -138,8 +138,8 @@ Text.configure.add_text_sound(Audio.text.neue, 0.2)
 -- There are nicer ways to do this, but it works as an example.
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
 example = {
-display_mode = 10,
-maxmodes = 10,
+display_mode = 11,
+maxmodes = 11,
 long_text_block = require('longtext'),
 ex5_textboxsize = 64,
 bop = true,
@@ -179,8 +179,11 @@ example8box:send("[function=example.bop=true]Did you hear about the [color=#FF00
 example9box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.comic_neue_small, character_sound = true, print_speed = 0.04, sound_every = 2, sound_number = 4})
 example9box:send("Hello! Welcome to the world of Pocket Creatures![waitforinput][scroll][newline]My name is Professor Tree![newline][waitforinput][scroll][scroll]And you are?", 150, false)
 example10box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.monogram_extended_custom, character_sound = false, keep_space_on_line_break=true, modify_character_width_table = {["j"] = -1, }})
-local sp_test_string = "[shake][[]color=red][/shake]"
-example10box:send("Special Sheep Polution Test, Bahhh:\n\nij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij\n\na a a a a a a a a a a a a a a a a a a a a a a a a\n\nI've dropped so many letters oh no!\nOjan Pjan Ajan Testj Characterj oj mh wj ikj applej orangej colaj Martijn..\n" .. sp_test_string, 540, true)
+local sp_test_string = "[shake][[]color=red]Wow it's characters[[]/color][/shake]"
+example10box:send("Special Sheep Polution Test, Bahhh:\n\nij ij ij ij ij ij ij ij ij ij ij ij ij ij ij [color=#ff0000]ij ij ij ij ij[/color] ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ijfart [rainbow]\n\na a a a a a a[/rainbow] a a a a a a a a a a a a a a a a a a [function=print('tes1t')]\n[function=print('te2st')] \nI've dropped so many letters oh no!\nOjan Pjan Ajan Testj Characterj oj mh wj ikj applej orangej colaj Martijn..\n" .. sp_test_string, 540, true)
+example11box = Text.new("left", { color = {0.9,0.9,0.9,0.95}, shadow_color = {0.5,0.5,1,0.4}, font = Fonts.monogram_extended_custom, character_sound = false, keep_space_on_line_break=true, modify_character_width_table = {["j"] = -1, }}) 
+example11box:send("Special Sheep Polution Test, Bahhh:\n\nij ij ij ij ij ij ij ij[function=print('test1')] ij ij ij ij ij ij ij [color=#ff0000]ij ij ij ij ij[/color] ij ij ij [function=print('test2')]ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ij ijfart[backspace=4] [rainbow]\n\na a a a a a a[/rainbow] a a a a a a a a a a a a a a a a a a [function=print('tes1t')]\n [function=print('te2st')] \nThis is for  Function is executed twice when placed exactly after where the text is wrapped #10 " , 540, false)
+
 end 
 
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
@@ -283,7 +286,7 @@ example_text = "Catching Monsters Style Textbox / C to continue text"
 love.graphics.draw(images.bg)
 
 Frame.draw("utp", 320/2 - 150/2 - 4, 180 - 40, example9box.get.width + 8, 2 * 17)
-local bop = 1
+
 love.graphics.setScissor( 320/2 - 150/2, 180 - 40 + 4, example9box.get.width, 2 * 17 )
 example9box:draw(320/2 - 150/2, 180 - 40 + 4)
 love.graphics.setScissor()
@@ -301,7 +304,7 @@ end
 
 if example.display_mode == 10 then 
   Screen.start()
-  example_text = "Center Style Textbox"
+  example_text = "BugFix Textbox"
   
   love.graphics.draw(images.bg)
   Screen.stop()
@@ -309,6 +312,20 @@ if example.display_mode == 10 then
   love.graphics.rectangle("fill",0,0,540, 540)
   love.graphics.setColor(1,1,1,1)
   example10box:draw(0,0)
+  end
+
+
+
+if example.display_mode == 11 then 
+  Screen.start()
+  example_text = "BugFix2 Textbox"
+  
+  love.graphics.draw(images.bg)
+  Screen.stop()
+  love.graphics.setColor(0,0,0,1)
+  love.graphics.rectangle("fill",0,0,540, 540)
+  love.graphics.setColor(1,1,1,1)
+  example11box:draw(0,0)
   end
 
 -- Draw Information Bar At the Bottom 
@@ -357,12 +374,17 @@ function love.update(dt)
 	if example.display_mode == 10 then 
 		example10box:update(dt)
 	end
+	if example.display_mode == 11 then 
+		example11box:update(dt)
+	end
 end
 
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
 -- Hacky mess per example
 --[[-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------]]--
 function love.keypressed( key, scancode, isrepeat )
+  if key == "f3" then print(table.concat(example11box.table_string)) end
+  if key == "f2" then print(table.concat(example11box.table_string, "|")) end
 	if key == "space" then example.display_mode = example.display_mode + 1 end
 	if example.display_mode > example.maxmodes then example.display_mode = 1 end
 	if example.display_mode == 1 then 

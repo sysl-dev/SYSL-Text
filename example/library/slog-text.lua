@@ -1,7 +1,7 @@
 local m = {
   debug = false,
   _NAME = 'SYSL-Text',
-  _VERSION = '2.1',
+  _VERSION = '2.2',
   _DESCRIPTION = 'Fancy Text System',
   _URL = 'https://github.com/SystemLogoff',
   _LICENSE = [[
@@ -450,6 +450,7 @@ function M:send(text, wrap_num, show_all)
       "audio",
       "waitforinput",
       "scroll",
+      "function", -- If you're using instant text, have your function calls outside of the textbox.
     } -- HACK: Some commands are not allowed when showing all the text at once.
     for i = 1, #self.table_string do
       for x = 1, #banned_commands do
@@ -476,6 +477,15 @@ function M:send(text, wrap_num, show_all)
     end
   end
 
+  ------------------------------------------------------------------------------
+  --Remove Empty
+  ------------------------------------------------------------------------------
+
+  for i = #self.table_string, 1, -1  do
+   if self.table_string[i] == "" then
+    table.remove(self.table_string, i)
+   end
+  end
   ------------------------------------------------------------------------------
   -- Calculates width and height, no matter what display mode the text is set to.
   -- Note, some special commands will throw this off, such as cursor drawing
@@ -683,8 +693,7 @@ function M:update(dt)
   -----------------------------------------------------------------------------
   -- Skip waiting for rendering when it's a command.
   -----------------------------------------------------------------------------
-  if self.table_string[self.current_character] and
-    self.table_string[self.current_character]:match("%" .. special_character[1]) then
+  if self.table_string[self.current_character] and self.table_string[self.current_character]:match("%" .. special_character[1]) and self.table_string[self.current_character] ~= (special_character[1] .. "newline" .. special_character[2]) then
     self.current_character = self.current_character + 1
   end
 
